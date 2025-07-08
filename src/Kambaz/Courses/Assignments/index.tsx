@@ -13,13 +13,16 @@ export default function Assignments() {
              className="wd-assignment-link" >
             A1 - ENV + HTML
           </a>
-          <p>Multiple Modules | <strong>Not available until</strong> May 6 at 12:00am</p>
-          <br></br>
-          <p><strong>Due</strong> May 20 at 11:59pm | 100pts</p>
+          <p>Multiple Modules | <strong>Not available until</strong> May 6 at 12:00am | <strong>Due</strong> May 20 at 11:59pm | 100pts</p>
         </li>
         <li className="wd-assignment-list-item">
-          {/* Complete On Your Own */}
+          <a href="#/Kambaz/Courses/1234/Assignments/124"
+             className="wd-assignment-link" >
+            A2 - POTATOES + BANANAS
+          </a>
+          <p>Single Module | <strong>Not available until</strong> Feb 14 at 12:00am | <strong>Due</strong> Mar 20 at 11:59pm | 100pts</p>
         </li>
       </ul>
     </div>
-);}
+  );
+}
