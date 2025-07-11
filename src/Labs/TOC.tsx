@@ -8,6 +8,7 @@ export default function TOC() {
       <li><Link to="/Labs/Lab2">Lab 2</Link></li>
       <li><Link to="/Labs/Lab3">Lab 3</Link></li>
       <li><Link to="/Kambaz">Kambaz</Link></li>
+      <li><Link to="https://github.com/robertdelacruz1551/kambaz-react-web-app">Github - Robert De La Cruz</Link></li>
     </ul>
   );
 }
