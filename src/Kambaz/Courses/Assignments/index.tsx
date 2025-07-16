@@ -3,6 +3,7 @@ import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import { CiEdit } from "react-icons/ci";
+import { Link } from "react-router";
 
 export default function Assignments() {
   return (
@@ -13,15 +14,15 @@ export default function Assignments() {
           <div className="wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" /> 
             ASSIGNMENTS 
-            <LessonControlButtons />
-            {/* TODO: Should this be ModeleControls instead?
-                      <ModuleControlButtons /> */}
           </div>
           <ListGroup className="wd-lessons rounded-0">
             <ListGroup.Item className="wd-assignment-item">
               <div className="wd-assignment-content">
                 <BsGripVertical className="wd-icon wd-grip-vertical" /> 
-                <CiEdit className="wd-icon wd-edit" />
+                <Link to="/Kambaz/Courses/1234/Assignments/1234" id="wd-course-modules-link"
+                      className="list-group-item text-danger border border-0"> 
+                      <CiEdit className="wd-icon wd-edit" /> 
+                </Link>
                 <div className="wd-assignment-details">
                   <span className="wd-assignment-title">A1</span>
                   <div className="wd-assignment-meta">
@@ -38,7 +39,10 @@ export default function Assignments() {
             <ListGroup.Item className="wd-assignment-item">
               <div className="wd-assignment-content">
                 <BsGripVertical className="wd-icon wd-grip-vertical" /> 
-                <CiEdit className="wd-icon wd-edit" />
+                <Link to="/Kambaz/Courses/1234/Assignments/1234" id="wd-course-modules-link"
+                      className="list-group-item text-danger border border-0"> 
+                      <CiEdit className="wd-icon wd-edit" /> 
+                </Link>
                 <div className="wd-assignment-details">
                   <span className="wd-assignment-title">A2</span>
                   <div className="wd-assignment-meta">
@@ -55,7 +59,10 @@ export default function Assignments() {
             <ListGroup.Item className="wd-assignment-item">
               <div className="wd-assignment-content">
                 <BsGripVertical className="wd-icon wd-grip-vertical" /> 
-                <CiEdit className="wd-icon wd-edit" />
+                <Link to="/Kambaz/Courses/1234/Assignments/1234" id="wd-course-modules-link"
+                      className="list-group-item text-danger border border-0"> 
+                      <CiEdit className="wd-icon wd-edit" /> 
+                </Link>
                 <div className="wd-assignment-details">
                   <span className="wd-assignment-title">A3</span>
                   <div className="wd-assignment-meta">

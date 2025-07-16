@@ -2,7 +2,7 @@ import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 export default function CourseNavigation() {
   return (
-    <ListGroup className="rounded-0 wd">
+    <ListGroup id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
       <ListGroup.Item as={Link} to="/Kambaz/Courses/1234/Home" className="active border border-0">
         Home </ListGroup.Item>
       <ListGroup.Item as={Link} to="/Kambaz/Courses/1234/Modules" className=" border border-0">
