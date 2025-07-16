@@ -1,0 +1,82 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+.list-group.wd > .list-group-item.active {
+  color: black;
+  background-color: white;
+  border-left: 3px solid black !important;
+}
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
+
+/** */
+
+.wd-module-text {
+  color: red;
+}
+
+.wd-assignment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes content to left and buttons to right */
+  padding: 1rem; /* Adjust padding as needed */
+  border-left: 5px solid #28a745; /* Green bar on the left */
+  border-radius: 0; /* Remove default border-radius if present */
+}
+
+.wd-assignment-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allows content to take up available space */
+}
+
+.wd-icon {
+  font-size: 1.5rem; /* Adjust icon size */
+  margin-right: 0.5rem; /* Space after icons */
+  color: #6c757d; /* Grey color for icons */
+}
+
+.wd-assignment-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.wd-assignment-title {
+  font-weight: bold;
+  font-size: 1.1rem; /* Adjust font size for A1 */
+  color: #212529; /* Darker color for title */
+}
+
+.wd-assignment-meta {
+  font-size: 0.9rem; /* Adjust font size for meta info */
+  color: #6c757d; /* Grey color for meta info */
+}
+
+
+.wd-unavailable-text {
+  color: #000000; /* Red color for "Not available until" */
+  font-weight: normal; /* Override potential default strong */
+}
+
+.wd-due-text {
+  font-weight: bold; /* Bold "Due" */
+  color: #6c757d; /* Grey for "Due" text */
+}
