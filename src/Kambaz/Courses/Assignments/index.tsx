@@ -5,11 +5,11 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
-import { useParams } from "react-router";
+// import { useParams } from "react-router";
 import * as db from "../../Database";
 
 export default function Assignments() {
-  const { cid } = useParams();
+  // const { cid } = useParams();
   const assignments = db.assignments;
 
   return (
