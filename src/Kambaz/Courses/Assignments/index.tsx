@@ -5,13 +5,13 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControls from "./AssignmentControls";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
-// import { useParams } from "react-router";
+import { useParams } from "react-router";
 import * as db from "../../Database";
 
 export default function Assignments() {
-  // const { cid } = useParams();
+  const { cid } = useParams();
   const assignments = db.assignments;
-
+  
   return (
     <div>
       <AssignmentControls /><br /><br /><br /><br />
@@ -22,7 +22,8 @@ export default function Assignments() {
             ASSIGNMENTS 
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {assignments.map((assignment) => (
+            {assignments.filter((assignment) => assignment.course === cid)
+                        .map((assignment) => (
               <ListGroup.Item className="wd-assignment-item">
                 <div className="wd-assignment-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 
