@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
+import { useState } from "react";
 export default function Counter() {
   // let count = 7;
   const [count, setCount] = useState(7);

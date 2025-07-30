@@ -7,9 +7,8 @@ import LessonControlButtons from "./LessonControlButtons";
 import ModuleControlButtons from "./ModuleControlButtons";
 import { useParams } from "react-router";
 // import * as db from "../../Database";
-import React, { useState } from "react";
-import { addModule, editModule, updateModule, deleteModule }
-  from "./reducer";
+import { useState } from "react";
+import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 
 export default function Modules() {
@@ -70,6 +69,3 @@ export default function Modules() {
   );
 }
 
-function uuidv4() {
-  throw new Error("Function not implemented.");
-}
