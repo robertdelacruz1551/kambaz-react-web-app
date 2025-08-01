@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
-// import { addAssignment, editAssignment, updateAssignment, deleteAssignment } from "./reducer";
+import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
+import { addAssignment, editAssignment, updateAssignment, deleteAssignment } from "./reducer";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-// import * as db from "../../Database";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AssignmentEditor() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
@@ -16,16 +16,27 @@ export default function AssignmentEditor() {
     (a: { course: string | undefined; _id: string | undefined; }) => 
       a.course === cid && 
       a._id === aid
-  );
+  ) || {
+      _id: uuidv4(), 
+      title: null, 
+      course: null, 
+      description: null, 
+      points: null, 
+      group: null, 
+      display: null, 
+      submission: null, 
+      email: null, 
+      due: null, 
+      available: {
+        from: null, 
+        to: null,
+      } 
+  };
 
-
-  // String fields, initialized as empty strings
   const [title, setTitle] = useState(assignment.title);
   const [description, setDescription] = useState(assignment.description);
   const [group, setGroup] = useState(assignment.group);
   const [email, setEmail] = useState(assignment.email);
-
-  // Number field, initialized to 0
   const [points, setPoints] = useState(assignment.points);
   const [display, setDisplay] = useState(assignment.display);
   const [due, setDue] = useState(assignment.due);
@@ -44,7 +55,6 @@ export default function AssignmentEditor() {
   const handleDueChange = (event: { target: { value: any; }; }) => { setDue(event.target.value); };
   const handleAvailableFromChange = (event: { target: { value: any; }; }) => { setAvailableFrom(event.target.value); };
   const handleAvailableToChange = (event: { target: { value: any; }; }) => { setAvailableTo(event.target.value); };
-
 
   return (
     <div id="wd-assignments-editor">
@@ -168,7 +178,27 @@ export default function AssignmentEditor() {
             onChange={handleAvailableToChange}/>
         </Col>
       </Form.Group>
-
+      <Button variant="primary"
+        onClick={() => {
+          addAssignment({
+              _id: uuidv4(), 
+              title: title, 
+              course: cid, 
+              description: description, 
+              points: points, 
+              group: group, 
+              display: display, 
+              submission: null, 
+              email: email, 
+              due: due, 
+              available: {
+                from: availableFrom, 
+                to: availableTo,
+              } 
+          });
+          console.log("Clicked");
+        }} > Save
+      </Button>
     </div>
 
   );
