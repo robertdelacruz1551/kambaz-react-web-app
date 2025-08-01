@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const assignments = db.assignments; // TODO: replace with reducer
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty = currentUser && currentUser.role === "FACULTY";
   

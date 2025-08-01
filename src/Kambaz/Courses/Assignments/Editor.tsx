@@ -1,16 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
+// import { addAssignment, editAssignment, updateAssignment, deleteAssignment } from "./reducer";
 import { useParams } from "react-router";
-import * as db from "../../Database";
+import { useSelector } from "react-redux";
+// import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer );
+  // const dispatch = useDispatch();
+
   const { cid } = useParams();
   const { aid } = useParams(); 
-  const assignment = db.assignments.find(
-    (a) => 
+  const assignment = assignments.find(
+    (a: { course: string | undefined; _id: string | undefined; }) => 
       a.course === cid && 
       a._id === aid
   );
-  
+
+  console.log(assignment);
+
   return (
     <div id="wd-assignments-editor">
       
