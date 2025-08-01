@@ -33,172 +33,141 @@ export default function AssignmentEditor() {
       } 
   };
 
-  const [title, setTitle] = useState(assignment.title);
-  const [description, setDescription] = useState(assignment.description);
-  const [group, setGroup] = useState(assignment.group);
-  const [email, setEmail] = useState(assignment.email);
-  const [points, setPoints] = useState(assignment.points);
-  const [display, setDisplay] = useState(assignment.display);
-  const [due, setDue] = useState(assignment.due);
-  const [availableFrom, setAvailableFrom] = useState(assignment.available.from);
-  const [availableTo, setAvailableTo] = useState(assignment.available.from);
-
-  // const [course, setCourse] = useState(assignment.course);
-  // const [submission, setSubmission] = useState(assignment.submission);
-
-  const handleTitleChange = (event: { target: { value: any; }; }) => { setTitle(event.target.value); };
-  const handleDescChange = (event: { target: { value: any; }; }) => { setDescription(event.target.value); };
-  const handleGroupChange = (event: { target: { value: any; }; }) => { setGroup(event.target.value); };
-  const handleEmailChange = (event: { target: { value: any; }; }) => { setEmail(event.target.value); };
-  const handlePointsChange = (event: { target: { value: any; }; }) => { setPoints(event.target.value); };
-  const handleDisplayChange = (event: { target: { value: any; }; }) => { setDisplay(event.target.value); };
-  const handleDueChange = (event: { target: { value: any; }; }) => { setDue(event.target.value); };
-  const handleAvailableFromChange = (event: { target: { value: any; }; }) => { setAvailableFrom(event.target.value); };
-  const handleAvailableToChange = (event: { target: { value: any; }; }) => { setAvailableTo(event.target.value); };
+  const [payload, setPayload] = useState(assignment);
+  const handleSubmit = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    console.log("Submitting with payload:", payload);
+    addAssignment(payload);
+  }
 
   return (
     <div id="wd-assignments-editor">
-      
-      <FormGroup className="mb-3" controlId="wd-name">
-        <FormLabel>Assignment Name</FormLabel>
-        <FormControl id="wd-name" type="email" placeholder="Assignment title"
-           value={title} onChange={handleTitleChange}/>
-      </FormGroup>
-      
-      <FormGroup className="mb-3" controlId="wd-descriptiona">
-        <FormControl id="wd-description" as="textarea" rows={10} placeholder="Enter the assignment description" 
-          value={description} onChange={handleDescChange}/>
-      </FormGroup>
-      
-      <Form.Group as={Row} className="mb-3" controlId="wd-points">
-        <Form.Label column sm={2}>
-          Points
-        </Form.Label>
-        <Col sm={10}>
-          <Form.Control type="text" value={points} onChange={handlePointsChange}/>
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-assignment-type">
-        <Form.Label column sm={2}>
-          Assignment Group
-        </Form.Label>
-        <Col sm={10}>
-          <FormSelect 
-            id="wd-assignment-group"
-            value = {group} onChange={handleGroupChange}>
-            <option value="ASSIGNMENTS">ASSIGNMENTS</option>
-            <option value="OTHER">OTHER</option>
-          </FormSelect>
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-display-grade">
-        <Form.Label column sm={2}>
-          Display Grade As
-        </Form.Label>
-        <Col sm={10}>
-          <FormSelect
-            id = "wd-display-grade"
-            value = {display} onChange={handleDisplayChange}>
-            <option value="PERCENTAGE">Percentage</option>
-            <option value="ABSOLUTE">Absolute</option>
-          </FormSelect>
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-submission-type">
-        <Form.Label column sm={2}>
-          Submission Type
-        </Form.Label>
-        <Col sm={10}>
-            <input type="checkbox" name="check-genre" id="wd-text-entry"/>
-            <label htmlFor="wd-text-entry">Text Entry</label><br/>
-            <input type="checkbox" name="check-genre" id="wd-website-url"/>
-            <label htmlFor="wd-website-url">Website URL</label><br/>
-            <input type="checkbox" name="check-genre" id="wd-media-recordings"/>
-            <label htmlFor="wd-media-recordings">Media Recordings</label><br/>
-            <input type="checkbox" name="check-genre" id="wd-student-annotation"/>
-            <label htmlFor="wd-student-annotation">Student Annotation</label><br/>
-            <input type="checkbox" name="check-genre" id="wd-file-upload"/>
-            <label htmlFor="wd-file-upload">File Upload</label><br/>
-        </Col>
-      </Form.Group>
-
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-assign-to">
-        <Form.Label column sm={2}>
-          Assigned To
-        </Form.Label>
-        <Col sm={10}>
-          <Form.Control 
-            type="email" 
-            placeholder="jdoe" 
-            id="wd-assign-to"
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </Col>
-      </Form.Group>
-
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-due-date">
-        <Form.Label column sm={2}>
-          Due Date
-        </Form.Label>
-        <Col sm={10}>
-          <Form.Control 
-            type="date" 
-            id="wd-due-date" 
-            value={due}
-            onChange={handleDueChange}/>
-        </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} className="mb-3" controlId="wd-due-date">
-        <Col sm={2}></Col>
-        <Col sm={5}>
+      <Form onSubmit={handleSubmit}>
+        <FormGroup className="mb-3" controlId="wd-name">
+          <FormLabel>Assignment Name</FormLabel>
+          <FormControl id="wd-name" type="email" placeholder="Assignment title"
+            value={payload.title} onChange={(e) => setPayload({ ...payload, title: e.target.value })}/>
+        </FormGroup>
+        
+        <FormGroup className="mb-3" controlId="wd-descriptiona">
+          <FormControl id="wd-description" as="textarea" rows={10} placeholder="Enter the assignment description" 
+            value={payload.description} 
+            onChange={(e) => setPayload({ ...payload, description: e.target.value })}/>
+        </FormGroup>
+        
+        <Form.Group as={Row} className="mb-3" controlId="wd-points">
           <Form.Label column sm={2}>
-            Available from
+            Points
           </Form.Label>
-          <Form.Control 
-            type="date" 
-            id="wd-due-date" 
-            value={availableFrom}
-            onChange={handleAvailableFromChange}/>
-        </Col>
-        <Col sm={5}>
+          <Col sm={10}>
+            <Form.Control type="text" value={payload.points} 
+              onChange={(e) => setPayload({ ...payload, points: e.target.value })}/>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-assignment-type">
           <Form.Label column sm={2}>
-            Available to
+            Assignment Group
           </Form.Label>
-          <Form.Control 
-            type="date" 
-            id="wd-due-date" 
-            value={availableTo}
-            onChange={handleAvailableToChange}/>
-        </Col>
-      </Form.Group>
-      <Button variant="primary"
-        onClick={() => {
-          addAssignment({
-              _id: uuidv4(), 
-              title: title, 
-              course: cid, 
-              description: description, 
-              points: points, 
-              group: group, 
-              display: display, 
-              submission: null, 
-              email: email, 
-              due: due, 
-              available: {
-                from: availableFrom, 
-                to: availableTo,
-              } 
-          });
-          console.log("Clicked");
-        }} > Save
-      </Button>
+          <Col sm={10}>
+            <FormSelect 
+              id="wd-assignment-group"
+              value = {payload.group} 
+              onChange={(e) => setPayload({ ...payload, group: e.target.value })}>
+              <option value="ASSIGNMENTS">ASSIGNMENTS</option>
+              <option value="OTHER">OTHER</option>
+            </FormSelect>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-display-grade">
+          <Form.Label column sm={2}>
+            Display Grade As
+          </Form.Label>
+          <Col sm={10}>
+            <FormSelect
+              id = "wd-display-grade"
+              value = {payload.display} 
+              onChange={(e) => setPayload({ ...payload, display: e.target.value })}>
+              <option value="PERCENTAGE">Percentage</option>
+              <option value="ABSOLUTE">Absolute</option>
+            </FormSelect>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-submission-type">
+          <Form.Label column sm={2}>
+            Submission Type
+          </Form.Label>
+          <Col sm={10}>
+              <input type="checkbox" name="check-genre" id="wd-text-entry"/>
+              <label htmlFor="wd-text-entry">Text Entry</label><br/>
+              <input type="checkbox" name="check-genre" id="wd-website-url"/>
+              <label htmlFor="wd-website-url">Website URL</label><br/>
+              <input type="checkbox" name="check-genre" id="wd-media-recordings"/>
+              <label htmlFor="wd-media-recordings">Media Recordings</label><br/>
+              <input type="checkbox" name="check-genre" id="wd-student-annotation"/>
+              <label htmlFor="wd-student-annotation">Student Annotation</label><br/>
+              <input type="checkbox" name="check-genre" id="wd-file-upload"/>
+              <label htmlFor="wd-file-upload">File Upload</label><br/>
+          </Col>
+        </Form.Group>
+
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-assign-to">
+          <Form.Label column sm={2}>
+            Assigned To
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control 
+              type="email" 
+              placeholder="jdoe" 
+              id="wd-assign-to"
+              value={payload.email}
+              onChange={(e) => setPayload({ ...payload, email: e.target.value })}
+            />
+          </Col>
+        </Form.Group>
+
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-due-date">
+          <Form.Label column sm={2}>
+            Due Date
+          </Form.Label>
+          <Col sm={10}>
+            <Form.Control 
+              type="date" 
+              id="wd-due-date" 
+              value={payload.due}
+              onChange={(e) => setPayload({ ...payload, due: e.target.value })}/>
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row} className="mb-3" controlId="wd-due-date">
+          <Col sm={2}></Col>
+          <Col sm={5}>
+            <Form.Label column sm={2}>
+              Available from
+            </Form.Label>
+            <Form.Control 
+              type="date" 
+              id="wd-due-date" 
+              value={payload.available.from}
+              onChange={(e) => setPayload({ ...payload, available: { from: e.target.value, to: payload.available.to} })}/>
+          </Col>
+          <Col sm={5}>
+            <Form.Label column sm={2}>
+              Available to
+            </Form.Label>
+            <Form.Control 
+              type="date" 
+              id="wd-due-date" 
+              value={payload.available.to}
+              onChange={(e) => setPayload({ ...payload, available: { from: payload.available.from, to: e.target.value} })}/>
+          </Col>
+        </Form.Group>
+        <Button variant="primary" type="submit">Save</Button>
+      </Form>
     </div>
 
   );
