@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { assignments } from "../../Database";
+import * as db from "../../Database";
 import { v4 as uuidv4 } from "uuid";
+
+console.log('In reducer' + db.assignments.length);
+
 const initialState = {
-  assignments: assignments,
+  assignments: db.assignments,
 };
+
 const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
@@ -23,7 +27,7 @@ const assignmentsSlice = createSlice({
           due: assignment.due, 
           available: {
             from: assignment.available.from, 
-            to: assignment.available.to
+            to: assignment.available.to,
           } 
       };
       state.assignments = [...state.assignments, newAssignment] as any;
@@ -47,6 +51,5 @@ const assignmentsSlice = createSlice({
     },
   },
 });
-export const { addAssignment, deleteAssignment, updateAssignment, editAssignment } =
-  assignmentsSlice.actions;
+export const { addAssignment, deleteAssignment, updateAssignment, editAssignment } = assignmentsSlice.actions;
 export default assignmentsSlice.reducer;

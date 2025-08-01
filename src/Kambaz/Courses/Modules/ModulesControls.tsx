@@ -16,7 +16,7 @@ export default function ModulesControls(
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty = currentUser.role === "FACULTY";
 
-  console.log(currentUser.role);
+  // console.log(currentUser.role);
   return (
    <div id="wd-modules-controls" className="text-nowrap">
       {faculty? <Button variant="danger" onClick={handleShow} size="lg" className="me-1 float-end" id="wd-add-module-btn">
