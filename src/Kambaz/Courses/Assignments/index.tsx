@@ -33,10 +33,11 @@ export default function Assignments() {
               <ListGroup.Item className="wd-assignment-item">
                 <div className="wd-assignment-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 
-                  <Link to={`/Kambaz/Courses/${assignment.course}/Assignments/${assignment._id}`} id="wd-course-modules-link"
-                        className="list-group-item text-danger border border-0"> 
-                        <CiEdit className="wd-icon wd-edit" /> 
-                  </Link>
+                  {faculty? 
+                    <Link to={`/Kambaz/Courses/${assignment.course}/Assignments/${assignment._id}`} id="wd-course-modules-link"
+                          className="list-group-item text-danger border border-0"> 
+                          <CiEdit className="wd-icon wd-edit" /> 
+                    </Link> : null}
                   <div className="wd-assignment-details">
                     <span className="wd-assignment-title">{assignment._id}</span>
                     <div className="wd-assignment-meta">
