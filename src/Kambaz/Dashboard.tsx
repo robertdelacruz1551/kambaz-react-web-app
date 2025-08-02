@@ -22,7 +22,6 @@ export default function Dashboard(
   ) 
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    // const { enrollments } = db;
     const [ enrolling, setEnrolling ] = useState(false);
 
     const enrolled = (courseId: string) => (
