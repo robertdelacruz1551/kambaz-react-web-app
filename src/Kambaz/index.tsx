@@ -13,6 +13,7 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>(db.courses);
+  const [enrollments, setEnrollments] = useState<any[]>(db.enrollments);
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
@@ -35,6 +36,23 @@ export default function Kambaz() {
     );
   };
 
+  function addEnrollment(course: any, student: any): void {
+    const enrolled = enrollments.some(enrollment => enrollment.course === course && enrollment.user === student);
+    if (!enrolled)
+      setEnrollments([...enrollments, {_id: uuidv4(), course: course, user: student}]);
+    console.log(enrollments.length);
+  }
+
+  function deleteEnrollment(course: any, student: any): void {
+    setEnrollments(enrollments.filter(
+      enrollment => !(
+        enrollment.course === course && 
+        enrollment.user === student
+      )
+    ));
+    console.log(enrollments.length);
+  }
+
   return (
     <div id="wd-kambaz">
       <KambazNavigation />
@@ -50,7 +68,9 @@ export default function Kambaz() {
                 setCourse={setCourse}
                 addNewCourse={addNewCourse}
                 deleteCourse={deleteCourse}
-                updateCourse={updateCourse}/>
+                updateCourse={updateCourse}
+                addEnrollment={addEnrollment}
+                deleteEnrollment={deleteEnrollment}/>
             </ProtectedRoute>
           } />
           <Route path="/Courses" element={<Courses courses={courses}/>} />
