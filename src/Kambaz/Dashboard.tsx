@@ -1,25 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Card, Col, FormControl, Row } from "react-bootstrap";
+import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import * as db from "./Database";
+import { useState } from "react";
 
 export default function Dashboard(
   { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
       courses: any[]; course: any; setCourse: (course: any) => void;
-      addNewCourse: () => void; deleteCourse: (course: any) => void;
+      addNewCourse: () => void; 
+      deleteCourse: (course: any) => void;
       updateCourse: () => void;}) 
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { enrollments } = db;
-    const mycourses = courses.filter((course) =>
+    const [ enrolling, setEnrolling ] = useState(false);
+
+    const enrolled = (courseId: string) => (
       enrollments.some(
         (enrollment) =>
-          enrollment.user === currentUser._id &&
-          enrollment.course === course._id
+          (
+            enrollment.user === currentUser._id &&
+            enrollment.course === courseId
+          )
         )
-    )
+    );
+    const mycourses = courses.filter((course) => enrolled(course._id) || enrolling)
     const faculty = currentUser.role === 'FACULTY';
 
     return (
@@ -44,7 +51,7 @@ export default function Dashboard(
               onChange={(e) => setCourse({ ...course, name: e.target.value }) } />
             <FormControl value={course.description}
               onChange={(e) => setCourse({ ...course, description: e.target.value }) } />
-          </div>:null
+          </div>: <Button variant="success" onClick={() => setEnrolling(!enrolling) }>Enrollments</Button>
         }
 
         <h2 id="wd-dashboard-published">Published Courses ({mycourses.length})</h2> <hr />
@@ -65,23 +72,43 @@ export default function Dashboard(
 
                       <button className="btn btn-primary"> Go </button>
 
-                      {faculty?<button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          deleteCourse(course._id);
-                        }} className="btn btn-danger float-end"
-                        id="wd-delete-course-click">
-                        Delete
-                      </button>:null}
+                      {enrolled(course._id) ? 
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            // deleteEnrollment(course._id, currentUser._id);
+                          }} className="btn btn-danger float-end"
+                          id="wd-delete-course-click">
+                          Unenroll
+                        </button> : 
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            // addEnrollment(course._id, currentUser._id);
+                          }} className="btn btn-success float-end"
+                          id="wd-delete-course-click">
+                          Enroll
+                        </button>}
+                      
+                      {faculty?
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            deleteCourse(course._id);
+                          }} className="btn btn-danger float-end"
+                          id="wd-delete-course-click">
+                          Delete
+                        </button>:null}
 
-                      {faculty?<button id="wd-edit-course-click"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          setCourse(course);
-                        }}
-                        className="btn btn-warning me-2 float-end" >
-                        Edit
-                      </button>:null}
+                      {faculty?
+                        <button id="wd-edit-course-click"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setCourse(course);
+                          }}
+                          className="btn btn-warning me-2 float-end" >
+                          Edit
+                        </button>:null}
 
                     </Card.Body>
                   </Link>
