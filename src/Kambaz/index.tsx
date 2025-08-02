@@ -65,6 +65,7 @@ export default function Kambaz() {
               <Dashboard
                 courses={courses}
                 course={course}
+                enrollments={enrollments}
                 setCourse={setCourse}
                 addNewCourse={addNewCourse}
                 deleteCourse={deleteCourse}
