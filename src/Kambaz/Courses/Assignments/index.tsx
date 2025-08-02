@@ -7,12 +7,13 @@ import AssignmentControls from "./AssignmentControls";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import { useSelector } from "react-redux";
+import type { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments; // TODO: replace with reducer
+  // const assignments = db.assignments; // TODO: replace with reducer
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty = currentUser && currentUser.role === "FACULTY";
   
@@ -27,8 +28,8 @@ export default function Assignments() {
             ASSIGNMENTS 
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {assignments.filter((assignment) => assignment.course === cid)
-                        .map((assignment) => (
+            {assignments.filter((assignment: { course: string | undefined; }) => assignment.course === cid)
+                        .map((assignment: { course: any; _id: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
               <ListGroup.Item className="wd-assignment-item">
                 <div className="wd-assignment-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 

@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 import * as db from "../../Database";
-import { v4 as uuidv4 } from "uuid";
-
-console.log('In reducer' + db.assignments.length);
 
 const initialState = {
   assignments: db.assignments,
@@ -15,7 +12,7 @@ const assignmentsSlice = createSlice({
   reducers: {
     addAssignment: (state, { payload: assignment }) => {
       const newAssignment: any = {
-          _id: uuidv4(), 
+          _id: `A${101 + state.assignments.length}`, 
           title: assignment.title, 
           course: assignment.course, 
           description: assignment.description, 

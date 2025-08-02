@@ -3,23 +3,23 @@
 import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
 import { addAssignment } from "./reducer";
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router";
 
 export default function AssignmentEditor() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   
+  const navigate = useNavigate();
   const { cid } = useParams();
   const { aid } = useParams(); 
   const assignment = assignments.find(
     (a: { course: string | undefined; _id: string | undefined; }) => 
       a.course === cid && 
       a._id === aid
-  ) || {
-      _id: uuidv4(), 
+  ) || { 
       title: null, 
-      course: null, 
+      course: cid, 
       description: null, 
       points: null, 
       group: null, 
@@ -34,23 +34,25 @@ export default function AssignmentEditor() {
   };
 
   const [payload, setPayload] = useState(assignment);
-  const handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
+  const dispatch = useDispatch();
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
     console.log("Submitting with payload:", payload);
-    addAssignment(payload);
+    dispatch(addAssignment(payload));
   }
 
   return (
     <div id="wd-assignments-editor">
-      <Form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+
         <FormGroup className="mb-3" controlId="wd-name">
           <FormLabel>Assignment Name</FormLabel>
-          <FormControl id="wd-name" type="email" placeholder="Assignment title"
+          <FormControl id="wd-name" type="text" name="title" placeholder="Assignment title"
             value={payload.title} onChange={(e) => setPayload({ ...payload, title: e.target.value })}/>
         </FormGroup>
         
         <FormGroup className="mb-3" controlId="wd-descriptiona">
-          <FormControl id="wd-description" as="textarea" rows={10} placeholder="Enter the assignment description" 
+          <FormControl id="wd-description" name="description" as="textarea" rows={10} placeholder="Enter the assignment description" 
             value={payload.description} 
             onChange={(e) => setPayload({ ...payload, description: e.target.value })}/>
         </FormGroup>
@@ -60,7 +62,7 @@ export default function AssignmentEditor() {
             Points
           </Form.Label>
           <Col sm={10}>
-            <Form.Control type="text" value={payload.points} 
+            <Form.Control type="text" name="points" value={payload.points} 
               onChange={(e) => setPayload({ ...payload, points: e.target.value })}/>
           </Col>
         </Form.Group>
@@ -72,6 +74,7 @@ export default function AssignmentEditor() {
           <Col sm={10}>
             <FormSelect 
               id="wd-assignment-group"
+              name="group"
               value = {payload.group} 
               onChange={(e) => setPayload({ ...payload, group: e.target.value })}>
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
@@ -87,6 +90,7 @@ export default function AssignmentEditor() {
           <Col sm={10}>
             <FormSelect
               id = "wd-display-grade"
+              name="display"
               value = {payload.display} 
               onChange={(e) => setPayload({ ...payload, display: e.target.value })}>
               <option value="PERCENTAGE">Percentage</option>
@@ -100,15 +104,15 @@ export default function AssignmentEditor() {
             Submission Type
           </Form.Label>
           <Col sm={10}>
-              <input type="checkbox" name="check-genre" id="wd-text-entry"/>
+              <input type="checkbox" name="submission" id="wd-text-entry"/>
               <label htmlFor="wd-text-entry">Text Entry</label><br/>
-              <input type="checkbox" name="check-genre" id="wd-website-url"/>
+              <input type="checkbox" name="submission" id="wd-website-url"/>
               <label htmlFor="wd-website-url">Website URL</label><br/>
-              <input type="checkbox" name="check-genre" id="wd-media-recordings"/>
+              <input type="checkbox" name="submission" id="wd-media-recordings"/>
               <label htmlFor="wd-media-recordings">Media Recordings</label><br/>
-              <input type="checkbox" name="check-genre" id="wd-student-annotation"/>
+              <input type="checkbox" name="submission" id="wd-student-annotation"/>
               <label htmlFor="wd-student-annotation">Student Annotation</label><br/>
-              <input type="checkbox" name="check-genre" id="wd-file-upload"/>
+              <input type="checkbox" name="submission" id="wd-file-upload"/>
               <label htmlFor="wd-file-upload">File Upload</label><br/>
           </Col>
         </Form.Group>
@@ -121,7 +125,8 @@ export default function AssignmentEditor() {
           <Col sm={10}>
             <Form.Control 
               type="email" 
-              placeholder="jdoe" 
+              placeholder="jdoe@email.com"
+              name="email"
               id="wd-assign-to"
               value={payload.email}
               onChange={(e) => setPayload({ ...payload, email: e.target.value })}
@@ -138,6 +143,7 @@ export default function AssignmentEditor() {
             <Form.Control 
               type="date" 
               id="wd-due-date" 
+              name="due"
               value={payload.due}
               onChange={(e) => setPayload({ ...payload, due: e.target.value })}/>
           </Col>
@@ -151,7 +157,8 @@ export default function AssignmentEditor() {
             </Form.Label>
             <Form.Control 
               type="date" 
-              id="wd-due-date" 
+              id="wd-from-date" 
+              name="from"
               value={payload.available.from}
               onChange={(e) => setPayload({ ...payload, available: { from: e.target.value, to: payload.available.to} })}/>
           </Col>
@@ -161,14 +168,17 @@ export default function AssignmentEditor() {
             </Form.Label>
             <Form.Control 
               type="date" 
-              id="wd-due-date" 
+              id="wd-to-date" 
+              name="to"
               value={payload.available.to}
               onChange={(e) => setPayload({ ...payload, available: { from: payload.available.from, to: e.target.value} })}/>
           </Col>
         </Form.Group>
-        <Button variant="primary" type="submit">Save</Button>
-      </Form>
+        <Button onClick={() => { navigate(`/Kambaz/Courses/${cid}/Assignments`); }}>Cancel</Button>
+        <Button variant="danger" type="submit">Save</Button>
+      </form>
     </div>
 
   );
 }
+
