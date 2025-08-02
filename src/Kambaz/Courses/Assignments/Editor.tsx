@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
-import { addAssignment } from "./reducer";
+import { addAssignment, updateAssignment } from "./reducer";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
@@ -37,8 +37,11 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    console.log("Submitting with payload:", payload);
-    dispatch(addAssignment(payload));
+    if (aid === 'add') {
+      dispatch(addAssignment(payload));
+    } else {
+      dispatch(updateAssignment(payload));
+    }
   }
 
   return (

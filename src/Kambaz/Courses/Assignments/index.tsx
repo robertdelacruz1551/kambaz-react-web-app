@@ -16,7 +16,7 @@ export default function Assignments() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty = currentUser && currentUser.role === "FACULTY";
-  
+
   return (
     <div>
       {faculty? <AssignmentControls /> : <br />}
@@ -29,7 +29,7 @@ export default function Assignments() {
           </div>
           <ListGroup className="wd-lessons rounded-0">
             {assignments.filter((assignment: { course: string | undefined; }) => assignment.course === cid)
-                        .map((assignment: { course: any; _id: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
+                        .map((assignment: { course: any; _id: string | undefined; due: Date | undefined; points: string | undefined; available: { to: Date | undefined } | undefined }) => (
               <ListGroup.Item className="wd-assignment-item">
                 <div className="wd-assignment-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 
@@ -41,9 +41,9 @@ export default function Assignments() {
                     <span className="wd-assignment-title">{assignment._id}</span>
                     <div className="wd-assignment-meta">
                       <span className="wd-module-text">Multiple Modules</span> | 
-                      <span className="wd-unavailable-text">Not available until May 6 at 12:00am</span> | <br />
-                      <span className="wd-due-text">Due May 13 at 11:59pm</span> | 
-                      <span className="wd-points-text">100 pts</span>
+                      <span className="wd-unavailable-text">Not available until {assignment.available?.to?.toString()}</span> | <br />
+                      <span className="wd-due-text">Due {assignment.due?.toString()}</span> | 
+                      <span className="wd-points-text">{assignment.points} pts</span>
                     </div>
                   </div>
                 </div>
