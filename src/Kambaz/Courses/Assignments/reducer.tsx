@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as db from "../../Database";
 import { v4 as uuidv4 } from "uuid";
 
-console.log('In reducer' + db.assignments.length);
 
 const initialState = {
   assignments: db.assignments,

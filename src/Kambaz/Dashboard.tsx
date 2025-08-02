@@ -56,7 +56,7 @@ export default function Dashboard(
                 <Card>
                   <Link to={`/Kambaz/Courses/${course._id}/Home`}
                         className="wd-dashboard-course-link text-decoration-none text-dark">
-                    <Card.Img variant="top" src="./public/images/reactjs.jpg" width="100%" height={160}/>
+                    <Card.Img variant="top" src="./images/reactjs.jpg" width="100%" height={160}/>
                     <Card.Body>
                       <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
                       <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
