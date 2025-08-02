@@ -2,23 +2,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import AssignmentControls from "./AssignmentControls";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
+import AssignmentsControls from "./AssignmentsControls";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const { cid } = useParams();
-  // const assignments = db.assignments; // TODO: replace with reducer
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const faculty = currentUser && currentUser.role === "FACULTY";
+  const faculty: boolean = currentUser && currentUser.role === "FACULTY";
+
+  function dispatch(arg0: { payload: any; type: "assignments/deleteAssignment"; }) {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div>
-      {faculty? <AssignmentControls /> : <br />}
+      {faculty? <AssignmentsControls /> : <br />}
       <br /><br /><br /><br />
       <ListGroup className="rounded-0" id="wd-modules">
         <ListGroup.Item className="wd-module p-0 mb-5 fs-5 border-gray">
@@ -46,7 +50,9 @@ export default function Assignments() {
                     </div>
                   </div>
                 </div>
-                <LessonControlButtons /> 
+                <AssignmentControlButtons 
+                    _id={ assignment._id }
+                    deleteAssignment={(_id) => { dispatch(deleteAssignment(_id)); }} />
               </ListGroup.Item>
             ))}
           </ListGroup>
