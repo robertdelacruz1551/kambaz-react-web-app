@@ -8,7 +8,6 @@ import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
-import type { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
