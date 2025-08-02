@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Routes, Route, Navigate } from "react-router";
 import Account from "./Account";
@@ -10,39 +11,42 @@ import * as db from "./Database";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ProtectedRoute from "./Account/ProtectedRoute";
+import { useSelector } from "react-redux";
 
 export default function Kambaz() {
-  const [courses, setCourses] = useState<any[]>(db.courses);
-  const [enrollments, setEnrollments] = useState<any[]>(db.enrollments);
-  const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
-    startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
-  });
-  const addNewCourse = () => {
-    setCourses([...courses, { ...course, _id: uuidv4() }]);
-  };
-  const deleteCourse = (courseId: any) => {
-    setCourses(courses.filter((course) => course._id !== courseId));
-  };
-  const updateCourse = () => {
-    setCourses(
-      courses.map((c) => {
-        if (c._id === course._id) {
-          return course;
-        } else {
-          return c;
-        }
-      })
-    );
-  };
 
+
+  // const [courses, setCourses] = useState<any[]>(db.courses);
+  // const [course, setCourse] = useState<any>({
+  //   _id: "1234", name: "New Course", number: "New Number",
+  //   startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+  // });
+  // const addNewCourse = () => {
+  //   setCourses([...courses, { ...course, _id: uuidv4() }]);
+  // };
+  // const deleteCourse = (courseId: any) => {
+  //   setCourses(courses.filter((course) => course._id !== courseId));
+  // };
+  // const updateCourse = () => {
+  //   setCourses(
+  //     courses.map((c) => {
+  //       if (c._id === course._id) {
+  //         return course;
+  //       } else {
+  //         return c;
+  //       }
+  //     })
+  //   );
+  // };
+  const { courses } = useSelector((state: any) => state.coursesReducer);
+
+  const [enrollments, setEnrollments] = useState<any[]>(db.enrollments);
   function addEnrollment(course: any, student: any): void {
     const enrolled = enrollments.some(enrollment => enrollment.course === course && enrollment.user === student);
     if (!enrolled)
       setEnrollments([...enrollments, {_id: uuidv4(), course: course, user: student}]);
     console.log(enrollments.length);
   }
-
   function deleteEnrollment(course: any, student: any): void {
     setEnrollments(enrollments.filter(
       enrollment => !(
@@ -63,13 +67,13 @@ export default function Kambaz() {
           <Route path="/Dashboard" element={
             <ProtectedRoute>
               <Dashboard
-                courses={courses}
-                course={course}
+                // courses={courses}
+                // course={course}
+                // setCourse={setCourse}
+                // addNewCourse={addCourse}
+                // deleteCourse={deleteCourse}
+                // updateCourse={updateCourse}
                 enrollments={enrollments}
-                setCourse={setCourse}
-                addNewCourse={addNewCourse}
-                deleteCourse={deleteCourse}
-                updateCourse={updateCourse}
                 addEnrollment={addEnrollment}
                 deleteEnrollment={deleteEnrollment}/>
             </ProtectedRoute>
