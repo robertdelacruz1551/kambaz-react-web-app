@@ -3,8 +3,8 @@
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState, type JSXElementConstructor, type ReactElement, type ReactNode, type ReactPortal } from "react";
-import { addCourse, editCourse, updateCourse, deleteCourse } from "./Courses/reducer";
-import { useSelector, useDispatch } from "react-redux";
+import { addCourse, updateCourse, deleteCourse } from "./Courses/reducer";
+import { useSelector } from "react-redux";
 
 export default function Dashboard(
     // { courses, course, enrollments, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
