@@ -2,28 +2,39 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-// import * as db from "./Database";
-import { useState } from "react";
+import { useState, type JSXElementConstructor, type ReactElement, type ReactNode, type ReactPortal } from "react";
+import { addCourse, editCourse, updateCourse, deleteCourse } from "./Courses/reducer";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Dashboard(
-    { courses, course, enrollments, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
+    // { courses, course, enrollments, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
+    // {
+    //   courses: any[]; 
+    //   course: any; 
+    //   enrollments: any[];
+    //   setCourse: (course: any) => void;
+    //   addNewCourse: () => void; 
+    //   deleteCourse: (course: any) => void;
+    //   updateCourse: () => void;
+    //   addEnrollment: (course: any, student: any) => void;
+    //   deleteEnrollment: (course: any, student: any) => void;
+    // }
+    { enrollments, addEnrollment, deleteEnrollment }: 
     {
-      courses: any[]; 
-      course: any; 
       enrollments: any[];
-      setCourse: (course: any) => void;
-      addNewCourse: () => void; 
-      deleteCourse: (course: any) => void;
-      updateCourse: () => void;
       addEnrollment: (course: any, student: any) => void;
       deleteEnrollment: (course: any, student: any) => void;
     }
   ) 
   {
+    const { courses } = useSelector((state: any) => state.coursesReducer);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [ enrolling, setEnrolling ] = useState(false);
-
+    const [course, setCourse] = useState<any>({
+      _id: "1234", name: "New Course", number: "New Number",
+      startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+    });
+    
     const enrolled = (courseId: string) => (
       enrollments.some(
         (enrollment) =>
@@ -33,7 +44,8 @@ export default function Dashboard(
           )
         )
     );
-    const mycourses = courses.filter((course) => enrolled(course._id) || enrolling)
+
+    const mycourses = courses.filter((course: { _id: string; }) => enrolled(course._id) || enrolling)
     const faculty = currentUser.role === 'FACULTY';
 
     return (
@@ -45,7 +57,7 @@ export default function Dashboard(
               <button 
                 className="btn btn-primary float-end"
                 id="wd-add-new-course-click"
-                onClick={addNewCourse} > 
+                onClick={addCourse} > 
                   Add 
               </button>
               <button 
@@ -65,7 +77,7 @@ export default function Dashboard(
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4">
 
-            {mycourses.map((course) => (
+            {mycourses.map((course: { _id: string; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; description: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
               <Col className="wd-dashboard-course" style={{ width: "300px" }}>
                 <Card>
                   <Link to={`/Kambaz/Courses/${course._id}/Home`}
