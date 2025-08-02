@@ -7,11 +7,18 @@ import * as db from "./Database";
 import { useState } from "react";
 
 export default function Dashboard(
-  { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
-      courses: any[]; course: any; setCourse: (course: any) => void;
+    { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
+    {
+      courses: any[]; 
+      course: any; 
+      setCourse: (course: any) => void;
       addNewCourse: () => void; 
       deleteCourse: (course: any) => void;
-      updateCourse: () => void;}) 
+      updateCourse: () => void;
+      addEnrollment: (course: any, student: any) => void;
+      deleteEnrollment: (course: any, student: any) => void;
+    }
+  ) 
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { enrollments } = db;
@@ -76,7 +83,7 @@ export default function Dashboard(
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            // deleteEnrollment(course._id, currentUser._id);
+                            deleteEnrollment(course._id, currentUser._id);
                           }} className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Unenroll
@@ -84,7 +91,7 @@ export default function Dashboard(
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            // addEnrollment(course._id, currentUser._id);
+                            addEnrollment(course._id, currentUser._id);
                           }} className="btn btn-success float-end"
                           id="wd-delete-course-click">
                           Enroll
@@ -120,7 +127,4 @@ export default function Dashboard(
       </div>
   );
 }
-// function uuidv4() {
-//   throw new Error("Function not implemented.");
-// }
 
