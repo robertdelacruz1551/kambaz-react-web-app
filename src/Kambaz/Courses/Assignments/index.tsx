@@ -5,7 +5,7 @@ import { BsGripVertical } from "react-icons/bs";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AssignmentsControls from "./AssignmentsControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import { deleteAssignment } from "./reducer";
@@ -15,10 +15,7 @@ export default function Assignments() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty: boolean = currentUser && currentUser.role === "FACULTY";
-
-  function dispatch(arg0: { payload: any; type: "assignments/deleteAssignment"; }) {
-    throw new Error("Function not implemented.");
-  }
+  const dispatch = useDispatch();
 
   return (
     <div>
