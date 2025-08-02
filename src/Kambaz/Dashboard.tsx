@@ -3,14 +3,15 @@
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import * as db from "./Database";
+// import * as db from "./Database";
 import { useState } from "react";
 
 export default function Dashboard(
-    { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
+    { courses, course, enrollments, setCourse, addNewCourse, deleteCourse, updateCourse, addEnrollment, deleteEnrollment }: 
     {
       courses: any[]; 
       course: any; 
+      enrollments: any[];
       setCourse: (course: any) => void;
       addNewCourse: () => void; 
       deleteCourse: (course: any) => void;
@@ -21,7 +22,7 @@ export default function Dashboard(
   ) 
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const { enrollments } = db;
+    // const { enrollments } = db;
     const [ enrolling, setEnrolling ] = useState(false);
 
     const enrolled = (courseId: string) => (
