@@ -17,8 +17,7 @@ export default function AssignmentEditor() {
     (a: { course: string | undefined; _id: string | undefined; }) => 
       a.course === cid && 
       a._id === aid
-  ) || {
-      _id: `A${101 + assignments.length}`, 
+  ) || { 
       title: null, 
       course: cid, 
       description: null, 
