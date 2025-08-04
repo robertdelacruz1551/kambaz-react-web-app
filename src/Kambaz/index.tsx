@@ -14,7 +14,7 @@ import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
 
 export default function Kambaz() {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [ courses, setCourses ] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
     _id: null, 
@@ -40,7 +40,7 @@ export default function Kambaz() {
   };
 
   const deleteCourse = async (courseId: string) => {
-      const status = await courseClient.deleteCourse(courseId);
+      await courseClient.deleteCourse(courseId);
       setCourses(courses.filter((course) => course._id !== courseId));
   };
 

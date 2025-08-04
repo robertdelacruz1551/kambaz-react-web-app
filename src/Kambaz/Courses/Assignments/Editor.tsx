@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
-import { addAssignment, updateAssignment } from "./reducer";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+
+import { addAssignment, updateAssignment } from "./reducer";
+import * as assignmentClient from "./client";
 
 export default function AssignmentEditor() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer );
@@ -13,11 +15,30 @@ export default function AssignmentEditor() {
   const navigate = useNavigate();
   const { cid } = useParams();
   const { aid } = useParams(); 
+  const dispatch = useDispatch();
+
+  const createNewAssignment = async (assignment: any) => {
+    await assignmentClient.createAssignment(assignment);
+    dispatch(addAssignment(assignment));
+  };
+
+  const updateExistingAssignment = async (assignment: any) => {
+    await assignmentClient.updateAssignment(cid, aid, assignment);
+    dispatch(updateAssignment(payload));
+  }
+
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    if (aid === 'add') createNewAssignment(payload);
+    if (aid !== 'add') updateExistingAssignment(payload);
+  }
+
   const assignment = assignments.find(
     (a: { course: string | undefined; _id: string | undefined; }) => 
       a.course === cid && 
       a._id === aid
   ) || { 
+      _id: `A${101 + assignments.length}`,
       title: null, 
       course: cid, 
       description: null, 
@@ -34,15 +55,7 @@ export default function AssignmentEditor() {
   };
 
   const [payload, setPayload] = useState(assignment);
-  const dispatch = useDispatch();
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    if (aid === 'add') {
-      dispatch(addAssignment(payload));
-    } else {
-      dispatch(updateAssignment(payload));
-    }
-  }
+
 
   return (
     <div id="wd-assignments-editor">

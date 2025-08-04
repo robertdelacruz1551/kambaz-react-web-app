@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-// import { useState } from "react";
-// import { addCourse, updateCourse, deleteCourse } from "./Courses/reducer";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
@@ -20,8 +18,8 @@ export default function Dashboard(
   ) 
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);    
+    const [ enrolling, setEnrolling ] = useState(false);
     const faculty = currentUser.role === 'FACULTY';
-    const [enrolling, setEnrolling] = useState(false);
     
     return (
       <div id="wd-dashboard">
@@ -29,17 +27,8 @@ export default function Dashboard(
         {faculty?
           <div>
             <h5>New Course
-              <button 
-                className="btn btn-primary float-end"
-                id="wd-add-new-course-click"
-                onClick={addNewCourse} > 
-                  Add 
-              </button>
-              <button 
-                className="btn btn-warning float-end me-2"
-                onClick={updateCourse} id="wd-update-course-click">
-                  Update
-              </button>
+              <button className="btn btn-primary float-end" id="wd-add-new-course-click" onClick={addNewCourse} >Add</button>
+              <button className="btn btn-warning float-end me-2" onClick={updateCourse} id="wd-update-course-click">Update</button>
             </h5><br />
 
             <FormControl value={course.name} className="mb-2"
@@ -69,25 +58,7 @@ export default function Dashboard(
 
                       <button className="btn btn-primary"> Go </button>
 
-                      <button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          // deleteEnrollment(course._id, currentUser._id);
-                        }} className="btn btn-danger float-end"
-                        id="wd-delete-course-click">
-                        Unenroll
-                      </button>
-
-                      <button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          // addEnrollment(course._id, currentUser._id);
-                        }} className="btn btn-success float-end"
-                        id="wd-delete-course-click">
-                        Enroll
-                      </button>
-                      
-                      {faculty?
+                      {faculty? 
                         <button
                           onClick={(event) => {
                             event.preventDefault();
@@ -95,9 +66,8 @@ export default function Dashboard(
                           }} className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Delete
-                        </button>:null}
-
-                      {faculty?
+                        </button> : null}
+                      {faculty? 
                         <button id="wd-edit-course-click"
                           onClick={(event) => {
                             event.preventDefault();
@@ -105,7 +75,26 @@ export default function Dashboard(
                           }}
                           className="btn btn-warning me-2 float-end" >
                           Edit
-                        </button>:null}
+                        </button> : null} 
+
+                      {!faculty && enrolling?
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            // deleteEnrollment(course._id, currentUser._id);
+                          }} className="btn btn-danger float-end"
+                          id="wd-delete-course-click">
+                          Unenroll
+                        </button> : null}
+                      {!faculty && enrolling?
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            // addEnrollment(course._id, currentUser._id);
+                          }} className="btn btn-success  me-2 float-end"
+                          id="wd-delete-course-click">
+                          Enroll
+                        </button> : null}
 
                     </Card.Body>
                   </Link>
