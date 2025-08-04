@@ -8,7 +8,6 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
-// import { courses } from "../Database";
 import { useLocation } from "react-router";
 
 export default function Courses({ courses }: { courses: any[]; }) {

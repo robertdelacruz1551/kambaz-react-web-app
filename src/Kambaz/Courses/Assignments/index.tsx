@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ListGroup } from "react-bootstrap";
@@ -8,7 +9,9 @@ import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import AssignmentsControls from "./AssignmentsControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
+import * as assignmentClient from "./client";
+import { useEffect } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -16,6 +19,20 @@ export default function Assignments() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const faculty: boolean = currentUser && currentUser.role === "FACULTY";
   const dispatch = useDispatch();
+
+  const fetchAssignments = async () => {
+    const assignments = await assignmentClient.findAssignments(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+
+  const removeAssignment = async (courseId: any, assignmentId: any) => {
+    await assignmentClient.deleteAssignment(courseId, assignmentId);
+    dispatch(deleteAssignment(assignmentId));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
 
   return (
     <div>
@@ -50,7 +67,7 @@ export default function Assignments() {
                 </div>
                 <AssignmentControlButtons 
                     _id={ assignment._id }
-                    deleteAssignment={(_id) => { dispatch(deleteAssignment(_id)); }} />
+                    deleteAssignment={(_id) => { removeAssignment(cid, _id); }} />
               </ListGroup.Item>
             ))}
           </ListGroup>
