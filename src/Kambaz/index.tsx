@@ -12,9 +12,11 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 import { useSelector } from "react-redux";
 import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
+import * as enrollmentClient from "./Courses/Enrollments/client";
 
 export default function Kambaz() {
   const [ courses, setCourses ] = useState<any[]>([]);
+  // const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
     _id: null, 
@@ -52,6 +54,15 @@ export default function Kambaz() {
     }));
   };
 
+
+  const createEnrollment = async (userId: any, courseId: any) => {
+    await enrollmentClient.createEnrollments( userId, courseId );
+  };
+
+  const deleteEnrollment = async (userId: any, courseId: any) => {
+    await enrollmentClient.deleteEnrollments( userId, courseId );
+  };  
+
   useEffect(() => {
     fetchCourses();
   }, [currentUser]);
@@ -73,6 +84,9 @@ export default function Kambaz() {
                   addNewCourse={addNewCourse}
                   updateCourse={updateCourse}
                   deleteCourse={deleteCourse}
+
+                  createEnrollment={createEnrollment}
+                  deleteEnrollment={deleteEnrollment}
                   />
               </ProtectedRoute>
             } />
