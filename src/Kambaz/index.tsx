@@ -16,7 +16,7 @@ import * as enrollmentClient from "./Courses/Enrollments/client";
 
 export default function Kambaz() {
   const [ courses, setCourses ] = useState<any[]>([]);
-  const [ enrollments, setEnrollments ] = useState<any[]>([]);
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
     _id: null, 
@@ -31,15 +31,6 @@ export default function Kambaz() {
     try {
       const courses = await userClient.findMyCourses();
       setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchEnrollments = async () => {
-    try {
-      const enrollments = await enrollmentClient.findEnrollments(currentUser._id);
-      setEnrollments(enrollments);
     } catch (error) {
       console.error(error);
     }
@@ -65,20 +56,15 @@ export default function Kambaz() {
 
 
   const createEnrollment = async (userId: any, courseId: any) => {
-    const newEnrollment = await enrollmentClient.createEnrollments( userId, courseId );
-    setEnrollments([ ...enrollments, newEnrollment ]);
+    await enrollmentClient.createEnrollments( userId, courseId );
   };
 
   const deleteEnrollment = async (userId: any, courseId: any) => {
-      await enrollmentClient.deleteEnrollments( userId, courseId );
-      setEnrollments( enrollments.filter((enrollment) => (
-                          enrollment.user === userId &&
-                          enrollment.course === courseId )));
+    await enrollmentClient.deleteEnrollments( userId, courseId );
   };  
 
   useEffect(() => {
     fetchCourses();
-    fetchEnrollments();
   }, [currentUser]);
 
   return (
