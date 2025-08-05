@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 export default function Dashboard(
-    { courses, course, setCourse, addNewCourse, updateCourse, deleteCourse }: 
+    { courses, course, setCourse, addNewCourse, updateCourse, deleteCourse, createEnrollment, deleteEnrollment }: 
     {
       courses: any[];
       course: any;
@@ -14,8 +14,11 @@ export default function Dashboard(
       addNewCourse: () => void;
       updateCourse: () => void;
       deleteCourse: (courseId: string) => void;
+
+      createEnrollment: (userId: any, courseId: any) => void;
+      deleteEnrollment: (userId: any, courseId: any) => void;
     }
-  ) 
+  )
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);    
     const [ enrolling, setEnrolling ] = useState(false);
@@ -81,7 +84,7 @@ export default function Dashboard(
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            // deleteEnrollment(course._id, currentUser._id);
+                            deleteEnrollment(currentUser._id, course._id);
                           }} className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Unenroll
@@ -90,7 +93,7 @@ export default function Dashboard(
                         <button
                           onClick={(event) => {
                             event.preventDefault();
-                            // addEnrollment(course._id, currentUser._id);
+                            createEnrollment(currentUser._id, course._id);
                           }} className="btn btn-success  me-2 float-end"
                           id="wd-delete-course-click">
                           Enroll
