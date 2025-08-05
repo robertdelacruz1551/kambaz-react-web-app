@@ -16,7 +16,7 @@ import * as enrollmentClient from "./Courses/Enrollments/client";
 
 export default function Kambaz() {
   const [ courses, setCourses ] = useState<any[]>([]);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+  // const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
     _id: null, 
