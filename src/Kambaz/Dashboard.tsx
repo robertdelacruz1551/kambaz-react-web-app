@@ -47,7 +47,8 @@ export default function Dashboard(
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4">
 
-            {courses.map((course: any) => (
+            {courses.filter((course) => course.enrolled || enrolling)
+                    .map((course: any) => (
               <Col className="wd-dashboard-course" style={{ width: "300px" }}>
                 <Card>
                   <Link to={`/Kambaz/Courses/${course._id}/Home`}
@@ -80,7 +81,7 @@ export default function Dashboard(
                           Edit
                         </button> : null} 
 
-                      {!faculty && enrolling?
+                      {!faculty && enrolling && course.enrolled?
                         <button
                           onClick={(event) => {
                             event.preventDefault();
@@ -89,12 +90,12 @@ export default function Dashboard(
                           id="wd-delete-course-click">
                           Unenroll
                         </button> : null}
-                      {!faculty && enrolling?
+                      {!faculty && enrolling && !course.enrolled?
                         <button
                           onClick={(event) => {
                             event.preventDefault();
                             createEnrollment(currentUser._id, course._id);
-                          }} className="btn btn-success  me-2 float-end"
+                          }} className="btn btn-success float-end"
                           id="wd-delete-course-click">
                           Enroll
                         </button> : null}

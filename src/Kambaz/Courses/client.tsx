@@ -33,3 +33,9 @@ export const findModulesForCourse = async (courseId: string) => {
   return response.data;
 };
 
+
+    // enrollInCourse: (state, { payload: courseId }) => {
+    //   state.courses = state.courses.map((m: any) =>
+    //     m._id === courseId ? { ...m, enrolled: !m.enrolled } : m
+    //   ) as any;
+    // },
