@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router";
 import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
-import * as enrollmentClient from "./Courses/Enrollments/client";
 import Account from "./Account";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import Session from "./Account/Session";
