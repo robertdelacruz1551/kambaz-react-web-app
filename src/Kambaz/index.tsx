@@ -94,15 +94,6 @@ export default function Kambaz() {
     }));
   };
 
-
-  const createEnrollment = async (userId: any, courseId: any) => {
-    await enrollmentClient.createEnrollments( userId, courseId );
-  };
-
-  const deleteEnrollment = async (userId: any, courseId: any) => {
-    await enrollmentClient.deleteEnrollments( userId, courseId );
-  };  
-
   useEffect(() => {
     if (enrolling) {
       fetchCourses();

@@ -68,8 +68,9 @@ export const deleteUser = async (userId: string) => {
 };
 
 
-export const createUser = async () => {
+export const createUser = async (user: any) => {
   // TODO: Implement later
+  console.log(user);
 };
 
 export const findCoursesForUser = async (userId: string) => {
