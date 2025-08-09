@@ -3,10 +3,9 @@
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 
 export default function Dashboard(
-    { courses, course, setCourse, addNewCourse, updateCourse, deleteCourse, createEnrollment, deleteEnrollment }: 
+    { courses, course, setCourse, addNewCourse, updateCourse, deleteCourse, enrolling, setEnrolling, updateEnrollment }: 
     {
       courses: any[];
       course: any;
@@ -14,19 +13,24 @@ export default function Dashboard(
       addNewCourse: () => void;
       updateCourse: () => void;
       deleteCourse: (courseId: string) => void;
-
-      createEnrollment: (userId: any, courseId: any) => void;
-      deleteEnrollment: (userId: any, courseId: any) => void;
+      
+      enrolling: any;
+      setEnrolling: (enrolling: boolean) => void;
+      updateEnrollment: (courseId: string, enrolled: boolean) => void;
     }
   )
   {
     const { currentUser } = useSelector((state: any) => state.accountReducer);    
-    const [ enrolling, setEnrolling ] = useState(false);
     const faculty = currentUser.role === 'FACULTY';
     
     return (
       <div id="wd-dashboard">
-        <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+        <h1 id="wd-dashboard-title">
+          Dashboard
+          <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+            {enrolling ? "My Courses" : "All Courses"}
+          </button>
+        </h1> <hr />
         {faculty?
           <div>
             <h5>New Course
@@ -47,15 +51,24 @@ export default function Dashboard(
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4">
 
-            {courses.filter((course) => course.enrolled || enrolling)
-                    .map((course: any) => (
+            {courses.map((course: any) => (
               <Col className="wd-dashboard-course" style={{ width: "300px" }}>
                 <Card>
                   <Link to={`/Kambaz/Courses/${course._id}/Home`}
                         className="wd-dashboard-course-link text-decoration-none text-dark">
                     <Card.Img variant="top" src="./images/reactjs.jpg" width="100%" height={160}/>
                     <Card.Body>
-                      <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
+                      <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                        {enrolling && (
+                          <button  onClick={(event) => {
+                                    event.preventDefault();
+                                    updateEnrollment(course._id, !course.enrolled);
+                                  }} 
+                                  className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`}>
+                            {course.enrolled ? "Unenroll" : "Enroll"}
+                          </button>)}
+                        {course.name}
+                      </Card.Title>
                       <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
                         {course.description}
                       </Card.Text>
@@ -80,25 +93,6 @@ export default function Dashboard(
                           className="btn btn-warning me-2 float-end" >
                           Edit
                         </button> : null} 
-
-                      {!faculty && enrolling && course.enrolled?
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            deleteEnrollment(currentUser._id, course._id);
-                          }} className="btn btn-danger float-end"
-                          id="wd-delete-course-click">
-                          Unenroll
-                        </button> : null}
-                      {!faculty && enrolling && !course.enrolled?
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            createEnrollment(currentUser._id, course._id);
-                          }} className="btn btn-success float-end"
-                          id="wd-delete-course-click">
-                          Enroll
-                        </button> : null}
 
                     </Card.Body>
                   </Link>
