@@ -31,7 +31,8 @@ export default function Dashboard(
             {enrolling ? "My Courses" : "All Courses"}
           </button>
         </h1> <hr />
-        {faculty?
+
+        {faculty && (
           <div>
             <h5>New Course
               <button className="btn btn-primary float-end" id="wd-add-new-course-click" onClick={addNewCourse} >Add</button>
@@ -44,8 +45,8 @@ export default function Dashboard(
             <FormControl value={course.description}
               onChange={(e) => setCourse({ ...course, description: e.target.value }) } 
             />
-          </div>: <Button variant="success" onClick={() => setEnrolling(!enrolling) }>Enrollments</Button>
-        }
+          </div>
+        )}
 
         <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
@@ -59,14 +60,6 @@ export default function Dashboard(
                     <Card.Img variant="top" src="./images/reactjs.jpg" width="100%" height={160}/>
                     <Card.Body>
                       <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                        {enrolling && (
-                          <button  onClick={(event) => {
-                                    event.preventDefault();
-                                    updateEnrollment(course._id, !course.enrolled);
-                                  }} 
-                                  className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`}>
-                            {course.enrolled ? "Unenroll" : "Enroll"}
-                          </button>)}
                         {course.name}
                       </Card.Title>
                       <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
@@ -75,7 +68,7 @@ export default function Dashboard(
 
                       <button className="btn btn-primary"> Go </button>
 
-                      {faculty? 
+                      {faculty && (
                         <button
                           onClick={(event) => {
                             event.preventDefault();
@@ -83,8 +76,9 @@ export default function Dashboard(
                           }} className="btn btn-danger float-end"
                           id="wd-delete-course-click">
                           Delete
-                        </button> : null}
-                      {faculty? 
+                        </button> 
+                      )}
+                      {faculty && (
                         <button id="wd-edit-course-click"
                           onClick={(event) => {
                             event.preventDefault();
@@ -92,7 +86,17 @@ export default function Dashboard(
                           }}
                           className="btn btn-warning me-2 float-end" >
                           Edit
-                        </button> : null} 
+                        </button>
+                      )} 
+
+                      {enrolling && (
+                        <button  onClick={(event) => {
+                                  event.preventDefault();
+                                  updateEnrollment(course._id, !course.enrolled);
+                                }} 
+                                className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`}>
+                          {course.enrolled ? "Unenroll" : "Enroll"}
+                        </button>)}
 
                     </Card.Body>
                   </Link>

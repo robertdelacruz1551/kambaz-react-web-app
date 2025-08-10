@@ -46,14 +46,14 @@ export default function Kambaz() {
 
 
   const [enrolling, setEnrolling] = useState<boolean>(false);
-  const findCoursesForUser = async () => {
-    try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
-      setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const findCoursesForUser = async () => {
+  //   try {
+  //     const courses = await userClient.findCoursesForUser(currentUser._id);
+  //     setCourses(courses);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   
   const fetchCourses = async () => {
     try {
@@ -97,7 +97,7 @@ export default function Kambaz() {
     if (enrolling) {
       fetchCourses();
     } else {
-      findCoursesForUser();
+      // findCoursesForUser();
     }
   }, [currentUser, enrolling]);
 
@@ -112,7 +112,7 @@ export default function Kambaz() {
             <Route path="/Dashboard" element={
               <ProtectedRoute>
                 <Dashboard 
-                  courses={courses}
+                  courses={courses.filter((course) => course.enrolled || enrolling)}
                   course={course}
                   setCourse={setCourse}
                   addNewCourse={addNewCourse}
