@@ -46,14 +46,14 @@ export default function Kambaz() {
 
 
   const [enrolling, setEnrolling] = useState<boolean>(false);
-  // const findCoursesForUser = async () => {
-  //   try {
-  //     const courses = await userClient.findCoursesForUser(currentUser._id);
-  //     setCourses(courses);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const findCoursesForUser = async () => {
+    try {
+      const courses = await userClient.findCoursesForUser(currentUser._id);
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   
   const fetchCourses = async () => {
     try {
@@ -94,12 +94,13 @@ export default function Kambaz() {
   };
 
   useEffect(() => {
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      // findCoursesForUser();
-    }
-  }, [currentUser, enrolling]);
+    // if (enrolling) {
+    //   fetchCourses();
+    // } else {
+    //   findCoursesForUser();
+    // }
+    fetchCourses();
+  }, [currentUser]);
 
   return (
     <Session>
