@@ -10,11 +10,12 @@ import * as client from "../../Account/client";
 import { FormControl } from "react-bootstrap";
 
 export default function PeopleDetails() {
-  const { uid} = useParams();
+  const { uid } = useParams();
   const [user, setUser] = useState<any>({});
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
+
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
     const updatedUser = { ...user, firstName, lastName };
@@ -39,7 +40,9 @@ export default function PeopleDetails() {
   useEffect(() => {
     if (uid) fetchUser();
   }, [uid]);
+
   if (!uid) return null;
+
   return (
     <div className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">
             <hr />
