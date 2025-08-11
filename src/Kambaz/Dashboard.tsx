@@ -89,7 +89,7 @@ export default function Dashboard(
                         </button>
                       )} 
 
-                      {enrolling && (
+                      {!faculty && enrolling && (
                         <button  onClick={(event) => {
                                   event.preventDefault();
                                   updateEnrollment(course._id, !course.enrolled);
