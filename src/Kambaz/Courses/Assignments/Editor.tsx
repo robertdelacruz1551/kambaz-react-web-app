@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
 import { useParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -33,7 +33,6 @@ export default function AssignmentEditor() {
   const fetchAssignment = async () => {
     if (aid !== 'add') {
       const response = await assignmentClient.findAssignment(aid);
-      console.log(response);
       setAssignment({...assignment, ...response });
     }
   }
@@ -53,7 +52,6 @@ export default function AssignmentEditor() {
 
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    console.log(assignment);
     if (aid === 'add') createNewAssignment(assignment);
     if (aid !== 'add') updateExistingAssignment(assignment);
   }
