@@ -9,14 +9,19 @@ export const findAssignments = async (courseId: any) => {
   return response.data;
 };
 
+export const findAssignment = async (assignmentId: any) => {
+  const { data } = await axios.get(`${REMOTE_SERVER}/api/assignment/${assignmentId}`);
+  return data;
+}
+
 export const createAssignment = async (assignment: any) => {
   const response = await axios.post(`${API}`, assignment);
   return response.data;
 };
 
 export const deleteAssignment = async (courseId: any, assignmentId: any) => {
-  const { data } = await axios.delete(`${API}/${courseId}/course/${assignmentId}/assignment`);
-  return data;
+  await axios.delete(`${API}/${courseId}/course/${assignmentId}/assignment`);
+  return findAssignments(courseId);
 };
 
 export const updateAssignment = async (courseId: any, assignmentId: any, assignment: any) => {

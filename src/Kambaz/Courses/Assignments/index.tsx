@@ -6,28 +6,27 @@ import { BsGripVertical } from "react-icons/bs";
 import { CiEdit } from "react-icons/ci";
 import { Link } from "react-router";
 import { useParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import AssignmentsControls from "./AssignmentsControls";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import { setAssignments, deleteAssignment } from "./reducer";
 import * as assignmentClient from "./client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [assignments, setAssignments] = useState([]);
   const faculty: boolean = currentUser && currentUser.role === "FACULTY";
-  const dispatch = useDispatch();
 
   const fetchAssignments = async () => {
     const assignments = await assignmentClient.findAssignments(cid as string);
-    dispatch(setAssignments(assignments));
+    setAssignments(assignments);
   };
 
   const removeAssignment = async (courseId: any, assignmentId: any) => {
-    await assignmentClient.deleteAssignment(courseId, assignmentId);
-    dispatch(deleteAssignment(assignmentId));
+    const assignments = await assignmentClient.deleteAssignment(courseId, assignmentId);
+    console.log(assignments);
+    setAssignments(assignments);
   };
 
   useEffect(() => {

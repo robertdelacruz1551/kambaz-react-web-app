@@ -22,7 +22,6 @@ export default function Courses({ courses }: { courses: any[]; }) {
   // TODO: Add the lookup for the people table
   const fetchUsers = async () => {
     const users = await client.findPeopleEnrrolledInThisCourse(cid);
-    console.log(users);
     setUsers( users );
   }
 

@@ -1,21 +1,45 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Col, Form, FormControl, FormGroup, FormLabel, FormSelect, Row } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { addAssignment, updateAssignment } from "./reducer";
 import * as assignmentClient from "./client";
 
 export default function AssignmentEditor() {
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer );
-  
-  const navigate = useNavigate();
+  // const { assignments } = useSelector((state: any) => state.assignmentsReducer );
   const { cid } = useParams();
   const { aid } = useParams(); 
+  const [assignment, setAssignment] = useState({
+    title: '', 
+    course: cid, 
+    description: '', 
+    points: '', 
+    group: 'ASSIGNMENTS', 
+    display: 'ABSOLUTE', 
+    submission: 'Web', 
+    email: '', 
+    due: Date(), 
+    available: {
+      from: Date(), 
+      to: Date(),
+    } 
+  });
+
+  const fetchAssignment = async () => {
+    if (aid !== 'add') {
+      const response = await assignmentClient.findAssignment(aid);
+      console.log(response);
+      setAssignment({...assignment, ...response });
+    }
+  }
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const createNewAssignment = async (assignment: any) => {
     await assignmentClient.createAssignment(assignment);
@@ -24,38 +48,19 @@ export default function AssignmentEditor() {
 
   const updateExistingAssignment = async (assignment: any) => {
     await assignmentClient.updateAssignment(cid, aid, assignment);
-    dispatch(updateAssignment(payload));
+    dispatch(updateAssignment(assignment));
   }
 
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    if (aid === 'add') createNewAssignment(payload);
-    if (aid !== 'add') updateExistingAssignment(payload);
+    console.log(assignment);
+    if (aid === 'add') createNewAssignment(assignment);
+    if (aid !== 'add') updateExistingAssignment(assignment);
   }
 
-  const assignment = assignments.find(
-    (a: { course: string | undefined; _id: string | undefined; }) => 
-      a.course === cid && 
-      a._id === aid
-  ) || { 
-      _id: `A${101 + assignments.length}`,
-      title: null, 
-      course: cid, 
-      description: null, 
-      points: null, 
-      group: null, 
-      display: null, 
-      submission: null, 
-      email: null, 
-      due: null, 
-      available: {
-        from: null, 
-        to: null,
-      } 
-  };
-
-  const [payload, setPayload] = useState(assignment);
-
+  useEffect( () => {
+    fetchAssignment()
+  }, []);
 
   return (
     <div id="wd-assignments-editor">
@@ -64,13 +69,13 @@ export default function AssignmentEditor() {
         <FormGroup className="mb-3" controlId="wd-name">
           <FormLabel>Assignment Name</FormLabel>
           <FormControl id="wd-name" type="text" name="title" placeholder="Assignment title"
-            value={payload.title} onChange={(e) => setPayload({ ...payload, title: e.target.value })}/>
+            value={assignment.title} onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}/>
         </FormGroup>
         
         <FormGroup className="mb-3" controlId="wd-descriptiona">
           <FormControl id="wd-description" name="description" as="textarea" rows={10} placeholder="Enter the assignment description" 
-            value={payload.description} 
-            onChange={(e) => setPayload({ ...payload, description: e.target.value })}/>
+            value={assignment.description} 
+            onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}/>
         </FormGroup>
         
         <Form.Group as={Row} className="mb-3" controlId="wd-points">
@@ -78,8 +83,8 @@ export default function AssignmentEditor() {
             Points
           </Form.Label>
           <Col sm={10}>
-            <Form.Control type="text" name="points" value={payload.points} 
-              onChange={(e) => setPayload({ ...payload, points: e.target.value })}/>
+            <Form.Control type="text" name="points" value={assignment.points} 
+              onChange={(e) => setAssignment({ ...assignment, points: e.target.value })}/>
           </Col>
         </Form.Group>
 
@@ -91,8 +96,8 @@ export default function AssignmentEditor() {
             <FormSelect 
               id="wd-assignment-group"
               name="group"
-              value = {payload.group} 
-              onChange={(e) => setPayload({ ...payload, group: e.target.value })}>
+              value = {assignment.group} 
+              onChange={(e) => setAssignment({ ...assignment, group: e.target.value })}>
               <option value="ASSIGNMENTS">ASSIGNMENTS</option>
               <option value="OTHER">OTHER</option>
             </FormSelect>
@@ -107,8 +112,8 @@ export default function AssignmentEditor() {
             <FormSelect
               id = "wd-display-grade"
               name="display"
-              value = {payload.display} 
-              onChange={(e) => setPayload({ ...payload, display: e.target.value })}>
+              value = {assignment.display} 
+              onChange={(e) => setAssignment({ ...assignment, display: e.target.value })}>
               <option value="PERCENTAGE">Percentage</option>
               <option value="ABSOLUTE">Absolute</option>
             </FormSelect>
@@ -144,8 +149,8 @@ export default function AssignmentEditor() {
               placeholder="jdoe@email.com"
               name="email"
               id="wd-assign-to"
-              value={payload.email}
-              onChange={(e) => setPayload({ ...payload, email: e.target.value })}
+              value={assignment.email}
+              onChange={(e) => setAssignment({ ...assignment, email: e.target.value })}
             />
           </Col>
         </Form.Group>
@@ -160,8 +165,8 @@ export default function AssignmentEditor() {
               type="date" 
               id="wd-due-date" 
               name="due"
-              value={payload.due}
-              onChange={(e) => setPayload({ ...payload, due: e.target.value })}/>
+              value={assignment.due}
+              onChange={(e) => setAssignment({ ...assignment, due: e.target.value })}/>
           </Col>
         </Form.Group>
 
@@ -175,8 +180,8 @@ export default function AssignmentEditor() {
               type="date" 
               id="wd-from-date" 
               name="from"
-              value={payload.available.from}
-              onChange={(e) => setPayload({ ...payload, available: { from: e.target.value, to: payload.available.to} })}/>
+              value={assignment.available.from}
+              onChange={(e) => setAssignment({ ...assignment, available: { from: e.target.value, to: assignment.available.to} })}/>
           </Col>
           <Col sm={5}>
             <Form.Label column sm={2}>
@@ -186,8 +191,8 @@ export default function AssignmentEditor() {
               type="date" 
               id="wd-to-date" 
               name="to"
-              value={payload.available.to}
-              onChange={(e) => setPayload({ ...payload, available: { from: payload.available.from, to: e.target.value} })}/>
+              value={assignment.available.to}
+              onChange={(e) => setAssignment({ ...assignment, available: { from: assignment.available.from, to: e.target.value} })}/>
           </Col>
         </Form.Group>
         <Button onClick={() => { navigate(`/Kambaz/Courses/${cid}/Assignments`); }}>Cancel</Button>

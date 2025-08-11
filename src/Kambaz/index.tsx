@@ -16,7 +16,6 @@ import "./styles.css";
 
 export default function Kambaz() {
   const [ courses, setCourses ] = useState<any[]>([]);
-  // const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
     _id: null, 
@@ -46,21 +45,11 @@ export default function Kambaz() {
 
 
   const [enrolling, setEnrolling] = useState<boolean>(false);
-  const findCoursesForUser = async () => {
-    try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
-      setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
   const fetchCourses = async () => {
     try {
-      const allCourses = await courseClient.fetchAllCourses();
-      const enrolledCourses = await userClient.findCoursesForUser(
-        currentUser._id
-      );
+      const allCourses      = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser( currentUser._id);
+
       const courses = allCourses.map((course: any) => {
         if (enrolledCourses.find((c: any) => c._id === course._id)) {
           return { ...course, enrolled: true };
@@ -81,6 +70,7 @@ export default function Kambaz() {
 
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
+    console.log(status);
     if (status)
       setCourses(courses.filter((course) => course._id !== courseId));
   };
@@ -94,11 +84,6 @@ export default function Kambaz() {
   };
 
   useEffect(() => {
-    // if (enrolling) {
-    //   fetchCourses();
-    // } else {
-    //   findCoursesForUser();
-    // }
     fetchCourses();
   }, [currentUser]);
 
