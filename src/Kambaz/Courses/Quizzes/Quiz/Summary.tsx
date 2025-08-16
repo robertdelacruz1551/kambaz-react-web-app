@@ -51,7 +51,7 @@ export default function QuizSummary() {
     <div>
       
       <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}>Back Quiz List</Button>
-      <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Take`)}>Take Quiz</Button>
+      <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}`)}>Take Quiz</Button>
       <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit`)}>Edit</Button>
 
       <br />
