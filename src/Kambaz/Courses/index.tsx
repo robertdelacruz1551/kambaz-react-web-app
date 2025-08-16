@@ -13,6 +13,11 @@ import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import * as client from './client';
 
+import Quizzes from "./Quizzes/index";
+import QuizSummary from "./Quizzes/Quiz/Summary";
+import QuizEditor from "./Quizzes/Quiz/Editor/index";
+import QuizTaker from "./Quizzes/Quiz/Preview";
+
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
@@ -49,14 +54,19 @@ export default function Courses({ courses }: { courses: any[]; }) {
                 <Route path="Modules" element={<Modules />} />
                 <Route path="Assignments" element={<Assignments />} />
                 <Route path="Assignments/:aid" element={<AssignmentEditor />} />
-                <Route path="People" element={
-                  <PeopleTable users={ users }/>}
-                />
+                <Route path="People" element={<PeopleTable users={ users }/>}/>
+
+                <Route path="Quizzes" element={<Quizzes />} />
+                <Route path="Quiz/:qid" element={<QuizSummary />} />
+                <Route path="Quiz/:qid/View" element={<QuizSummary />} />
+                <Route path="Quiz/:qid/Edit/*" element={<QuizEditor />} />
+                {/* <Route path="Quiz/:qid/Preview" element={<QuizTaker />} /> */}
+
               </Routes>
             </div>
           </div>  
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -80,3 +80,39 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
   font-weight: bold; /* Bold "Due" */
   color: #6c757d; /* Grey for "Due" text */
 }
+
+
+
+
+
+/** */
+.wd-quiz-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes content to left and buttons to right */
+  padding: 1rem; /* Adjust padding as needed */
+  border-left: 5px solid #28a745; /* Green bar on the left */
+  border-radius: 0; /* Remove default border-radius if present */
+}
+
+.wd-quiz-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allows content to take up available space */
+}
+
+.wd-quiz-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.wd-quiz-title {
+  font-weight: bold;
+  font-size: 1.1rem; /* Adjust font size for A1 */
+  color: #212529; /* Darker color for title */
+}
+
+.wd-quiz-meta {
+  font-size: 0.9rem; /* Adjust font size for meta info */
+  color: #6c757d; /* Grey color for meta info */
+}
