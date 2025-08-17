@@ -23,40 +23,56 @@ export default function Question(
   const [editing, setEditing] = useState(-1);
 
   const addOption = () => {
-    setQuestion({
+    const que = {
       ...question, 
-      options: [...question.options, '']
-    });
+      ...{
+        options: [...question.options, null],
+        correct: [...question.correct, null],
+        answers: [...question.answers, null]
+      }
+    };
+    setQuestion({...que});
   }
 
   const setOption = (index: any, newOption: any) => {
-    setQuestion({
+    const que = {
       ...question, 
-      options: question.options.map((oldOption: any, i: any) => {
-        return index === i? newOption : oldOption;
-      })
-    });
+      options: question.options.map((oldOption: any, i: any) => { return index === i? newOption : oldOption; })
+    };
+    setQuestion({...que});
   }
 
   const removeOption = (index: any) => {
-    setQuestion({
+    const que = {
       ...question, 
-      options: question.options.filter((_:any, i: any) => i !== index)
-    });
+      ...{
+        options: question.options.filter((_:any, i: any) => i !== index),
+        correct: question.correct.filter((_:any, i: any) => i !== index),
+        answers: question.answers.filter((_:any, i: any) => i !== index)
+      }
+    };
+    setQuestion({...que});
   }
 
-  const setCorrect = (option: any) => {
-    setQuestion({
+  const setCorrect = (index: any, option: any) => {
+    const que = {
       ...question, 
-      correct: question.type === 'True-False' ? [option] : [...question.correct, option]
-    });
+      correct: [...question.correct.map((item: any, at: any) => {
+        const original = question.type === 'True-False' ? null : item;
+        return index === at ? original : option;
+      })]
+      // correct: question.type === 'True-False' ? [option] : [...question.correct.map((old:any, i: any) => i !== index ? old : option)]
+    }
+    console.log(que)
+    setQuestion({...que});
   }
 
   const setIncorrect = (option: any) => {
-    setQuestion({
+    const que = {
       ...question, 
-      correct: question.correct.filter((o: any) => o !== option)
-    });
+      correct: question.correct.map((old: any) => old !== option? old : null)
+    };
+    setQuestion({...que});
   }
 
 
@@ -78,7 +94,9 @@ export default function Question(
                 ...question, 
                 ...{
                   type: e.target.value,
-                  options: e.target.value === 'True-False' ? ['True', 'False'] : []
+                  options: e.target.value === 'True-False' ? ['True', 'False'] : [],
+                  answers: e.target.value === 'True-False' ? [ null, null ] : [],
+                  correct: e.target.value === 'True-False' ? [ null, null ] : [],
                 }
               })}>
               <option value="Multiple Choice">Multiple Choice</option>
@@ -92,7 +110,10 @@ export default function Question(
           </InputGroup>
 
           <hr />
-          <p>Enter your question and multiple answers, then select the correct answer.</p>
+          {question.type === 'Multiple Choice' && <p>Enter your question and multiple answers, then select the correct answer.</p>}
+          {question.type === 'True-False' && <p>Enter your question and specify the correct true/false answers, then select the correct answer.</p>}
+          {question.type === 'Fill In The Blank' && <p>Enter your question and add fill in the blank placeholders.</p>}
+          
           <strong>Question:</strong><br />
           
           <FormGroup className="mb-3" controlId="wd-descriptiona">
@@ -101,7 +122,7 @@ export default function Question(
               onChange={(e) => setQuestion({...question, text: e.target.value})}/>
           </FormGroup>
           
-          <strong>Question:</strong><br />
+          <strong>Options:</strong><br />
 
           {question.type !== 'True-False' && 
             <Form.Group className="mb-3" >
@@ -116,9 +137,12 @@ export default function Question(
                 <div className="wd-quiz-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 
                   
-                  {question.correct.includes(option)?
-                    <IoCheckmarkCircleSharp className="wd-icon wd-edit" onClick={() => setIncorrect(option)}/>:
-                    <PiXCircleLight className="wd-icon wd-edit" onClick={() => setCorrect(option)}/>} 
+                  {question.type !== 'Fill In The Blank' && 
+                    (
+                      question.correct.includes(option)?
+                        <IoCheckmarkCircleSharp className="wd-icon wd-edit" onClick={() => setIncorrect(option)}/>:
+                        <PiXCircleLight className="wd-icon wd-edit" onClick={() => setCorrect(index, option)}/>
+                    )} 
 
                   {editing !== index ? 
                     <CiPen className="wd-icon wd-edit" onClick={() => setEditing(index)}/> :
@@ -126,7 +150,8 @@ export default function Question(
 
                   <div className="me-1 position-relative">
                     <FormControl disabled={editing !== index} id="wd-question-title" type="text" name="title" placeholder="Answer..."
-                      value={option} onChange={(e) => setOption(index, e.target.value)}/>
+                      value={option} 
+                      onChange={(e) => setOption(index, e.target.value)}/>
                   </div>
 
                   {editing === index && question.type !== 'True-False' && <TfiTrash className="text-danger me-1 fs-5" onClick={() => removeOption(index)}/>} 

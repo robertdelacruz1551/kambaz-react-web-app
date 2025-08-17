@@ -1,115 +1,72 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useParams } from "react-router"
 import Content from "./Content";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import * as client from "../client";
 
 export default function Quiz() {
   const { qid } = useParams();
-
-  const [ quiz, _ ] = useState({
-    _id: "a1c831c4-7ad3-42c9-9e9d-0ca8ba31fd8b",
+  const [ quiz, setQuiz ] = useState<any>({
+    _id: "",
     details: {
-      title: "Some Quiz 2",
-      course: "RS101",
-      description: "This is just a description",
+      title: "",
+      course: "",
+      description: "",
       typ: "GRADED",
-      points: 100,
+      points: 0,
       group: "QUIZZES",
-      shuffle: true,
-      timeLimit: 20,
+      shuffle: false,
+      timeLimit: 0,
       multiattempts: false,
       show: "IMMEDIATELY",
       code: "",
-      oneQuestion: true,
+      oneQuestion: false,
       webcam: false,
       lock: false,
-      due: "2025-01-10",
+      due: Date().toString(),
       available: {
-        from: "2025-01-10",
-        to: "2025-01-10"
+        from: Date().toString(),
+        to: Date().toString()
       }
     },
-    questions: [
-      {
-        _id: "829e96b1-1d29-48a6-bc95-ac7dfe214b70",
-        type: "True-False",
-        points: 0,
-        text: "4*4 = 16?",
-        options: [ "True", "False" ],
-        correct: [ "True" ],
-        title: "easy"
-      },
-      {
-        _id: "04f2fe3f-dc86-4e7f-948c-40a27ea7410b",
-        type: "Multiple Choice",
-        points: 0,
-        text: "What is the capital of the Rhode Island?",
-        options: [ "Providence", "Warwick" ],
-        correct: [ "Providence" ],
-        title: "easy"
-      },
-      {
-        _id: "91b9b859-5f6c-4588-bcf8-f18bceed766b",
-        type: "Fill In The Blank",
-        points: "10",
-        text: "Jack and ____ went up ___ hill",
-        options: [ null, null ],
-        correct: [ "Jill", "the" ],
-        title: "easy"
-      }
-    ],
+    questions: [],
     __v: 0,
     published: false
-  })
-
-  const [ answers, setAnswers ] = useState({
-    _id: uuidv4(),
-    quizId: quiz._id,
-    questions: [
-      ...quiz.questions.map((question) => {
-        const answer = {
-          _id: question._id,
-          type: question.type,
-          correct: question.correct,
-          provided: [null]
-        };
-        if (question.type === 'Fill In The Blank') {
-          answer.provided = [...question.correct.map(() => null)];
-        } else if (question.type === 'Multiple Choice') {
-          answer.provided = [...question.options.map(() => null)];
-        }
-        return answer;
-      })
-    ]
   });
 
-  const handleTrueFalseAnswer = (at: any, answer: any) => {
+  const handleTrueFalseAnswer = (id: any, at: any, answer: any) => {
     const ans = {
-      ...answers,
+      ...quiz,
       questions: [
-        ...answers.questions.map(
-          (question, index) => {
-            return at !== index ? question : { ...question, provided: [ answer ]};
+        ...quiz.questions.map(
+          (question: any) => {
+            return question._id !== id ? question : {
+              ...question,
+              answers: question.answers.map(
+                (_: any, index: any) => {
+                  return index !== at ? null : answer;
+                })
+            }
           })
       ]
     };
-    console.log(ans);
-    setAnswers({...ans});
+    setQuiz({...ans});
   };
 
-  const handleNonTrueFalseAnswers = (at: any, ind: any, answer: any) => {
+  const handleNonTrueFalseAnswers = (id: any, at: any, answer: any) => {
     return {
-      ...answers,
+      ...quiz,
       questions: [
-        ...answers.questions.map(
-          (question, index) => {
-            return at !== index ? question : {
+        ...quiz.questions.map(
+          (question: any) => {
+            return question._id !== id ? question : {
               ...question,
-              provided: question.provided.map(
-                (prov, index2) => {
-                  return ind !== index2 ? prov : answer;
+              answers: question.answers.map(
+                (original: any, index: any) => {
+                  return index !== at ? original : answer;
                 })
             }
           })
@@ -117,20 +74,57 @@ export default function Quiz() {
     };
   };
 
-  const handleMultiChoiceAnswer = (at: any, ind: any, answer: any) => {
-    const ans = handleNonTrueFalseAnswers(at, ind, answer);
-    console.log(ans);
-    setAnswers({...ans});
+  const handleMultiChoiceAnswer = (id: any, at: any, answer: any) => {
+    const ans = handleNonTrueFalseAnswers(id, at, answer);
+    setQuiz({...ans});
   };
 
-  const handleFillInBlankAnswer = (at: any, ind: any, answer: any) => {
-    const ans = handleNonTrueFalseAnswers(at, ind, answer);
-    console.log(ans);
-    setAnswers({...ans});
+  const handleFillInBlankAnswer = (id: any, at: any, answer: any) => {
+    const ans = handleNonTrueFalseAnswers(id, at, answer);
+    setQuiz({...ans});
   };
 
+  const fetchQuiz = async () => {
+    const doc = await client.findQuiz(qid);
+    setQuiz({
+      ...doc,
+      ...{
+        _id: uuidv4(),
+        quizId: qid,
+        user: '',
+        final: false,
+      }
+    })
+  }
+
+  useEffect( () => {
+    fetchQuiz();
+  }, []);
+  
   const handleSubmitQuiz = () => {
+    const check: any[] = [];
+    for (let i = 0; i < quiz.questions.length; i++) {
+      const question = quiz.questions[i];
+      let right = true;
+      for (let j = 0; j < question.answers.length; j++) {
+        const correct = question.correct[j];
+        const answer  = question.answers[j];
+        right = correct === answer && right;
+      };
+      check.push({_id: question._id, score: right ? +question.points : 0});
+    }
 
+    const ans = {
+      ...quiz,
+      questions: [...quiz.questions.map((question: any) => {
+        return {
+          ...question,
+          score: check.filter((result: any) => result._id === question._id)[0].score
+        }
+      })]
+    }
+    console.log(ans);
+    // TODO: save results
   };
 
   return (

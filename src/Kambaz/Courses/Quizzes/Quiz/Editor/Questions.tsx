@@ -19,11 +19,14 @@ export default function Questions(
 ) {
   const dummy = {
     _id: uuidv4(),
+    title: '',
     type: 'Multiple Choice',
     points: 0,
     text: '',
     options: [],
-    correct: []
+    correct: [],
+    answers: [],
+    score: 0
   };
 
   const [show, setShow] = useState(false);

@@ -6,6 +6,8 @@ import { useState } from "react";
 import { Button, Card, Col, Form, FormControl, ListGroup, Row } from "react-bootstrap";
 import { CgDanger } from "react-icons/cg";
 import { CiCircleQuestion } from "react-icons/ci";
+import { IoCheckmarkCircleSharp } from "react-icons/io5";
+import { PiXCircleLight } from "react-icons/pi";
 
 export default function Content(
   { quiz, handleTrueFalseAnswer, handleMultiChoiceAnswer, handleFillInBlankAnswer, handleSubmitQuiz }:
@@ -15,9 +17,9 @@ export default function Content(
       details: any, 
       questions: any[]
     };
-    handleTrueFalseAnswer: (at: any, answer: any) => void;
-    handleMultiChoiceAnswer: (at: any, ind: any, answer: any) => void;
-    handleFillInBlankAnswer: (at: any, ind: any, answer: any) => void;
+    handleTrueFalseAnswer: (id: any, index: any, answer: any) => void;
+    handleMultiChoiceAnswer: (id: any, index: any, answer: any) => void;
+    handleFillInBlankAnswer: (id: any, index: any, answer: any) => void;
     handleSubmitQuiz: () => void;
   }
 ) {
@@ -42,7 +44,7 @@ export default function Content(
       <br />
 
 
-      {quiz.questions
+      { quiz.questions
             .filter((_: any, index: any) => index === active)
             .map((question: any) => (
         <Card>
@@ -64,22 +66,32 @@ export default function Content(
             <hr></hr>
 
             <ListGroup>
-              {question.options.map((option: any, optI: any) => (
+              {question.options.map((option: any, index: any) => (
                 <ListGroup.Item>
                   {question.type === 'True-False' &&
                     <Form.Check type="radio" label={option} name={question._id}
-                      onClick={() => handleTrueFalseAnswer(active, option)}
+                      defaultChecked={question.answers[0] === option}
+                      onChange={() => handleTrueFalseAnswer(question._id, index, option)}
                     />}
 
                   {question.type === 'Multiple Choice' &&
                     <Form.Check type="checkbox" label={option} name={question._id}
-                      onChange={(e) => handleMultiChoiceAnswer(active, optI, e.target.checked ? option : null)}
+                      defaultChecked={question.answers[index] === option}
+                      onChange={(e) => handleMultiChoiceAnswer(question._id, index, e.target.checked ? option : null)}
                     />}
 
                   {question.type === 'Fill In The Blank' && 
-                    <FormControl type="text" value={option} name={question._id}
-                      onChange={(e) => handleFillInBlankAnswer(active, optI, e.target.value)}
+                    <FormControl type="text" value={question.answers[index]} name={question._id}
+                      onChange={(e) => handleFillInBlankAnswer(question._id, index, e.target.value)}
                     />}
+                    
+                  {question.answers[index] !== null &&
+                    (
+                      option === question.correct[index] ? 
+                        <IoCheckmarkCircleSharp className="wd-icon wd-edit"/>:
+                        <PiXCircleLight className="wd-icon wd-edit"/>
+                    )}
+                    
                 </ListGroup.Item>
               ))}
             </ListGroup>
