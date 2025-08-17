@@ -3,10 +3,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Button, Col, Modal, Row, Table } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import * as client from "../client";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import AttemptsTable from "./AttemptsTable";
 
 export default function QuizSummary() {
   const { cid } = useParams();
@@ -40,14 +41,19 @@ export default function QuizSummary() {
     questions: []
   };
   const [quiz, setQuiz] = useState({...dummy});
+  const [attempts, setAttempts] = useState<any>([]);
   const [attemptCreationErrorMessage, setAttemptCreationMessage] = useState(true);
+  const [showPreviewOrTakeModel, setShowPreviewOrTakeModel] = useState(false);
   
   const fetchQuiz = async () => {
     const response = await client.findQuiz(qid);
     setQuiz({ ...quiz, ...response});
   }
 
-  const [showPreviewOrTakeModel, setShowPreviewOrTakeModel] = useState(false);
+  const fetchAttempts = async () => {
+    const response = await client.getAllMyQuizAttemps(qid, currentUser._id);
+    setAttempts([...response]);
+  }
 
   const handlePreviewOrTake = async () => {
     const attemptId = uuidv4();
@@ -61,6 +67,7 @@ export default function QuizSummary() {
         created: Date().toString()
       }
     };
+
     const response = await client.createQuizAttempt(attempt);
     if (response.status === 200) {
       const { data } = response;
@@ -74,6 +81,7 @@ export default function QuizSummary() {
 
   useEffect( () => {
     fetchQuiz()
+    fetchAttempts()
   }, []);
   
   return (
@@ -82,7 +90,8 @@ export default function QuizSummary() {
       <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}>Back Quiz List</Button>
       { faculty && <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit`)}>Edit</Button>}
       { faculty && <Button onClick={() => setShowPreviewOrTakeModel(true)}>Preview</Button>}
-      {!faculty && <Button onClick={() => setShowPreviewOrTakeModel(true)}>Take Quiz</Button>}
+      {!faculty && (attempts.length === 0 || quiz.details.multiattempts) && 
+        <Button onClick={() => setShowPreviewOrTakeModel(true)}>Take Quiz</Button>}
 
       <Modal show={showPreviewOrTakeModel} onHide={() => setShowPreviewOrTakeModel(false)}>
         <Modal.Header closeButton>
@@ -191,9 +200,12 @@ export default function QuizSummary() {
           </tr>
         </tbody>
       </Table>
+
+      <br />
+      <br />
+      
+      <AttemptsTable attempts={attempts} />
     </div>
   );
-
-  
 }
 

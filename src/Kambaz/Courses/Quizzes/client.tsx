@@ -37,25 +37,22 @@ export const createOrUpdate = async (quiz: any) => {
 // --------------------------------
 // Quiz attempts submissions
 // --------------------------------
-
 export const getQuizAttempt = async (quizId: any, attemptId: any) => {
   const { data } = await axios.get(`${API}/${quizId}/attempt/${attemptId}`);
   return data;
 }
 
 export const putQuizAttempt = async (quiz: any) => {
-  console.log(quiz);
   const { data } = await axios.put(`${API}/${quiz.quizId}/attempt/${quiz._id}`, quiz);
   return data;
 }
 
 export const getAllMyQuizAttemps = async (quizId: any, userId: any) => {
-  const { data } = await axios.get(`${API}/${quizId}/user/${userId}/attempts`);
-  return data;
+  const response = await axios.get(`${API}/${quizId}/user/${userId}/attempts`);
+  return response.data;
 }
 
 export const createQuizAttempt = async (attempt: any) => {
-  console.log(`${API}/${attempt.quizId}/attempt`);
   const response = await axios.post(`${API}/${attempt.quizId}/attempt`, attempt);
   return response;
 }

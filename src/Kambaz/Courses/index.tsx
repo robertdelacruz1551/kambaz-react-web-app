@@ -17,6 +17,7 @@ import Quizzes from "./Quizzes/index";
 import QuizSummary from "./Quizzes/Quiz/Summary";
 import QuizEditor from "./Quizzes/Quiz/Editor/index";
 import Quiz from "./Quizzes/Quiz";
+import AttemptsTable from "./Quizzes/Quiz/AttemptsTable";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
@@ -24,7 +25,6 @@ export default function Courses({ courses }: { courses: any[]; }) {
   const { pathname } = useLocation();
   const [users, setUsers] = useState([]);
 
-  // TODO: Add the lookup for the people table
   const fetchUsers = async () => {
     const users = await client.findPeopleEnrrolledInThisCourse(cid);
     setUsers( users );
@@ -61,10 +61,10 @@ export default function Courses({ courses }: { courses: any[]; }) {
                 <Route path="Quiz/:qid/View" element={<QuizSummary />} />
                 <Route path="Quiz/:qid/Edit/*" element={<QuizEditor />} />
                 <Route path="Quiz/:qid/attempt/:attemptId/Preview" element={<Quiz preview={true}/>} />
-                <Route path="Quiz/:qid/attempt/:attemptId/Preview" element={<Quiz preview={false}/>} />
-                {/* /Kambaz/Courses/${cid}/Quiz/${qid}/attempt/${data._Id}/${faculty ? 'Preview' : 'Attempt'} */}
-                {/* <Route path="Quiz/:qid/Preview" element={<QuizTaker />} /> */}
-
+                <Route path="Quiz/:qid/attempt/:attemptId/Review" element={<Quiz preview={true}/>} />
+                <Route path="Quiz/:qid/attempt/:attemptId/Attempt" element={<Quiz preview={false}/>} />
+                {/* <Route path="Quiz/:qid/attempts" element={<AttemptsTable />} /> */}
+                
               </Routes>
             </div>
           </div>  

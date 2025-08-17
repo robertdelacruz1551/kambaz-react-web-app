@@ -11,7 +11,6 @@ export default function PeopleTable(
   { users = [] }: { users?: any[] }
 ) 
 {
-  console.log(users);
   
   return (
     <div id="wd-people-table">
