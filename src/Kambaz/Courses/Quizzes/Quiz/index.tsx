@@ -4,13 +4,18 @@
 import { useParams } from "react-router"
 import Content from "./Content";
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import * as client from "../client";
 
-export default function Quiz() {
-  const { qid } = useParams();
+export default function Quiz({ preview } : { preview: boolean }) {
+  const { qid, attemptId } = useParams();
   const [ quiz, setQuiz ] = useState<any>({
     _id: "",
+    quizId: "",
+    userId: "",
+    published: false,
+    final: false,
+    created: Date().toString(),
+    updated: Date().toString(),
     details: {
       title: "",
       course: "",
@@ -32,67 +37,39 @@ export default function Quiz() {
         to: Date().toString()
       }
     },
-    questions: [],
-    __v: 0,
-    published: false
+    questions: []
   });
 
-  const handleTrueFalseAnswer = (id: any, at: any, answer: any) => {
-    const ans = {
+  const handleAnswerReceived = (questionId: any, answer: any) => {
+    const update = {
       ...quiz,
       questions: [
         ...quiz.questions.map(
           (question: any) => {
-            return question._id !== id ? question : {
+            return question._id !== questionId ? question : {
               ...question,
-              answers: question.answers.map(
-                (_: any, index: any) => {
-                  return index !== at ? null : answer;
+              options: question.options.map(
+                (original: any) => {
+                  if (question.type === 'True-False') {
+                    return original._id !== answer._id ? {...original, answer: null} : answer;
+                  } else {
+                    return original._id !== answer._id ? original : answer;
+                  }
                 })
             }
           })
       ]
     };
-    setQuiz({...ans});
-  };
-
-  const handleNonTrueFalseAnswers = (id: any, at: any, answer: any) => {
-    return {
-      ...quiz,
-      questions: [
-        ...quiz.questions.map(
-          (question: any) => {
-            return question._id !== id ? question : {
-              ...question,
-              answers: question.answers.map(
-                (original: any, index: any) => {
-                  return index !== at ? original : answer;
-                })
-            }
-          })
-      ]
-    };
-  };
-
-  const handleMultiChoiceAnswer = (id: any, at: any, answer: any) => {
-    const ans = handleNonTrueFalseAnswers(id, at, answer);
-    setQuiz({...ans});
-  };
-
-  const handleFillInBlankAnswer = (id: any, at: any, answer: any) => {
-    const ans = handleNonTrueFalseAnswers(id, at, answer);
-    setQuiz({...ans});
-  };
+    setQuiz({...update});
+  }
 
   const fetchQuiz = async () => {
-    const doc = await client.findQuiz(qid);
+    const quiz = await client.getQuizAttempt(qid, attemptId);
     setQuiz({
-      ...doc,
+      ...quiz, 
       ...{
-        _id: uuidv4(),
-        quizId: qid,
-        user: '',
-        final: false,
+        preview: preview,
+        updated: Date().toString()
       }
     })
   }
@@ -101,39 +78,33 @@ export default function Quiz() {
     fetchQuiz();
   }, []);
   
-  const handleSubmitQuiz = () => {
-    const check: any[] = [];
-    for (let i = 0; i < quiz.questions.length; i++) {
-      const question = quiz.questions[i];
-      let right = true;
-      for (let j = 0; j < question.answers.length; j++) {
-        const correct = question.correct[j];
-        const answer  = question.answers[j];
-        right = correct === answer && right;
-      };
-      check.push({_id: question._id, score: right ? +question.points : 0});
-    }
-
-    const ans = {
+  const handleSubmitQuiz = (final: boolean = false) => {
+    const results = {
       ...quiz,
-      questions: [...quiz.questions.map((question: any) => {
-        return {
-          ...question,
-          score: check.filter((result: any) => result._id === question._id)[0].score
-        }
-      })]
+      ...{
+        final: final,
+        preview: preview,
+        updated: Date().toString(),
+        questions: [
+        ...quiz.questions.map(
+          (question: any) => {
+            return {
+              ...question,
+              score: question.options.every((option: any) => (option.correct && option.text === option.answer) || (!option.correct && option.text !== option.answer) ) ? question.points : 0
+            }
+          })
+        ]
+      }
     }
-    console.log(ans);
-    // TODO: save results
+    client.putQuizAttempt(results);
+    setQuiz({...results});
   };
 
   return (
     <div>
       <Content 
         quiz={quiz}
-        handleTrueFalseAnswer={handleTrueFalseAnswer}
-        handleMultiChoiceAnswer={handleMultiChoiceAnswer}
-        handleFillInBlankAnswer={handleFillInBlankAnswer}
+        handleAnswerReceived={handleAnswerReceived}
         handleSubmitQuiz={handleSubmitQuiz}
       />
     </div>

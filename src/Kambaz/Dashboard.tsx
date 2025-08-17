@@ -20,7 +20,7 @@ export default function Dashboard(
     }
   )
   {
-    const { currentUser } = useSelector((state: any) => state.accountReducer);    
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const faculty = currentUser.role === 'FACULTY';
     
     return (

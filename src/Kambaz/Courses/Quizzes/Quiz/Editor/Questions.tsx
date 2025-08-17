@@ -24,8 +24,6 @@ export default function Questions(
     points: 0,
     text: '',
     options: [],
-    correct: [],
-    answers: [],
     score: 0
   };
 

@@ -10,6 +10,7 @@ import { FiPlus } from "react-icons/fi";
 import { IoCheckmark, IoCheckmarkCircleSharp } from "react-icons/io5";
 import { PiXCircleLight } from "react-icons/pi";
 import { TfiTrash } from "react-icons/tfi";
+import { v4 as uuidv4 } from "uuid"
 
 export default function Question(
   { question, setQuestion } :
@@ -24,54 +25,61 @@ export default function Question(
 
   const addOption = () => {
     const que = {
-      ...question, 
-      ...{
-        options: [...question.options, null],
-        correct: [...question.correct, null],
-        answers: [...question.answers, null]
-      }
+      ...question,
+      options: [
+        ...question.options, 
+        { _id: uuidv4(),
+          text:'', 
+          correct: false, 
+          answer: null }
+      ]
     };
     setQuestion({...que});
   }
 
-  const setOption = (index: any, newOption: any) => {
+  const setOption = (option: any) => {
     const que = {
       ...question, 
-      options: question.options.map((oldOption: any, i: any) => { return index === i? newOption : oldOption; })
+      options: [...question.options.map((original:any) => original._id === option._id ? option : original)]
     };
     setQuestion({...que});
   }
 
-  const removeOption = (index: any) => {
+  const removeOption = (_id: any) => {
     const que = {
       ...question, 
-      ...{
-        options: question.options.filter((_:any, i: any) => i !== index),
-        correct: question.correct.filter((_:any, i: any) => i !== index),
-        answers: question.answers.filter((_:any, i: any) => i !== index)
-      }
+      options: [...question.options.filter((option : any) => option._id !== _id)]
     };
     setQuestion({...que});
   }
 
-  const setCorrect = (index: any, option: any) => {
+  const setCorrect = (option: any) => {
     const que = {
-      ...question, 
-      correct: [...question.correct.map((item: any, at: any) => {
-        const original = question.type === 'True-False' ? null : item;
-        return index === at ? original : option;
-      })]
-      // correct: question.type === 'True-False' ? [option] : [...question.correct.map((old:any, i: any) => i !== index ? old : option)]
+      ...question,
+      options: [
+        ...question.options.map(
+          (original: any) => {
+            if (question.type === 'True-False') {
+              return original._id === option._id ? { ...option, correct: true } : {...original, correct: false };
+            } else {
+              return original._id === option._id ? { ...option, correct: true } : original;
+            }
+          }
+        )
+      ]
     }
-    console.log(que)
     setQuestion({...que});
   }
 
   const setIncorrect = (option: any) => {
     const que = {
-      ...question, 
-      correct: question.correct.map((old: any) => old !== option? old : null)
-    };
+      ...question,
+      options: [
+        ...question.options.map(
+          (original: any) => original._id === option._id ? { ...option, correct: false } : original
+        )
+      ]
+    }
     setQuestion({...que});
   }
 
@@ -94,9 +102,7 @@ export default function Question(
                 ...question, 
                 ...{
                   type: e.target.value,
-                  options: e.target.value === 'True-False' ? ['True', 'False'] : [],
-                  answers: e.target.value === 'True-False' ? [ null, null ] : [],
-                  correct: e.target.value === 'True-False' ? [ null, null ] : [],
+                  options: e.target.value === 'True-False' ? [{ _id: uuidv4(), text:'True', correct: false, answer: null }, { _id: uuidv4(), text:'False', correct: false, answer: null }] : [],
                 }
               })}>
               <option value="Multiple Choice">Multiple Choice</option>
@@ -139,9 +145,9 @@ export default function Question(
                   
                   {question.type !== 'Fill In The Blank' && 
                     (
-                      question.correct.includes(option)?
-                        <IoCheckmarkCircleSharp className="wd-icon wd-edit" onClick={() => setIncorrect(option)}/>:
-                        <PiXCircleLight className="wd-icon wd-edit" onClick={() => setCorrect(index, option)}/>
+                      option.correct?
+                        <IoCheckmarkCircleSharp className="wd-icon wd-edit" onClick={() => setIncorrect({...option, correct: false})}/>:
+                        <PiXCircleLight className="wd-icon wd-edit" onClick={() => setCorrect({...option, correct: true})}/>
                     )} 
 
                   {editing !== index ? 
@@ -149,12 +155,13 @@ export default function Question(
                     <IoCheckmark className="wd-icon wd-edit" onClick={() => setEditing(-1)}/>}
 
                   <div className="me-1 position-relative">
-                    <FormControl disabled={editing !== index} id="wd-question-title" type="text" name="title" placeholder="Answer..."
-                      value={option} 
-                      onChange={(e) => setOption(index, e.target.value)}/>
+                    <FormControl disabled={editing !== index} id={`wd-${question._id}`} type="text" name={question.text} placeholder="Answer..."
+                      value={option.text} 
+                      onChange={(e) => setOption({...option, text: e.target.value})}/>
                   </div>
 
-                  {editing === index && question.type !== 'True-False' && <TfiTrash className="text-danger me-1 fs-5" onClick={() => removeOption(index)}/>} 
+                  {editing === index && question.type !== 'True-False' && 
+                    <TfiTrash className="text-danger me-1 fs-5" onClick={() => removeOption(option._id)}/>} 
 
                 </div>
               </ListGroup.Item>

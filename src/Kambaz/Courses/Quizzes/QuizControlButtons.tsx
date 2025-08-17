@@ -34,7 +34,7 @@ export default function QuizControlButtons(
           <IoEllipsisVertical className="fs-4" />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit/Details`)}>Edit</Dropdown.Item>
+          <Dropdown.Item onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit/Detail`)}>Edit</Dropdown.Item>
           <Dropdown.Item onClick={() => deleteQuiz(qid)}>Delete</Dropdown.Item>
           {!published && <Dropdown.Item onClick={() => publishQuiz(qid)}>Publish</Dropdown.Item>}
           { published && <Dropdown.Item onClick={() => publishQuiz(qid)}>Unublish</Dropdown.Item>}

@@ -2,14 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Button, Col, Modal, Row, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../client";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 export default function QuizSummary() {
   const { cid } = useParams();
   const { qid } = useParams(); 
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);     
+  const faculty = currentUser.role === 'FACULTY'; 
 
   const dummy = {
     details: {
@@ -35,12 +39,37 @@ export default function QuizSummary() {
     },
     questions: []
   };
-  console.log(dummy);
   const [quiz, setQuiz] = useState({...dummy});
+  const [attemptCreationErrorMessage, setAttemptCreationMessage] = useState(true);
   
   const fetchQuiz = async () => {
     const response = await client.findQuiz(qid);
     setQuiz({ ...quiz, ...response});
+  }
+
+  const [showPreviewOrTakeModel, setShowPreviewOrTakeModel] = useState(false);
+
+  const handlePreviewOrTake = async () => {
+    const attemptId = uuidv4();
+    const attempt = {
+      ...quiz,
+      ...{
+        _id: attemptId,
+        quizId: qid,
+        userId: currentUser._id,
+        final: false,
+        created: Date().toString()
+      }
+    };
+    const response = await client.createQuizAttempt(attempt);
+    if (response.status === 200) {
+      const { data } = response;
+      console.log(data);
+      navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/attempt/${attemptId}/${faculty ? 'Preview' : 'Attempt'}`)
+      setShowPreviewOrTakeModel(true)
+    } else {
+      setAttemptCreationMessage(true);
+    }
   }
 
   useEffect( () => {
@@ -51,8 +80,28 @@ export default function QuizSummary() {
     <div>
       
       <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}>Back Quiz List</Button>
-      <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}`)}>Take Quiz</Button>
-      <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit`)}>Edit</Button>
+      { faculty && <Button onClick={() => navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/Edit`)}>Edit</Button>}
+      { faculty && <Button onClick={() => setShowPreviewOrTakeModel(true)}>Preview</Button>}
+      {!faculty && <Button onClick={() => setShowPreviewOrTakeModel(true)}>Take Quiz</Button>}
+
+      <Modal show={showPreviewOrTakeModel} onHide={() => setShowPreviewOrTakeModel(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {attemptCreationErrorMessage ? 
+            <p>Do you want to start a new attempt?</p> : 
+            <p className="text-warning">There was an error setting up the event...</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowPreviewOrTakeModel(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handlePreviewOrTake}>
+            Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <br />
       <br />
@@ -144,5 +193,7 @@ export default function QuizSummary() {
       </Table>
     </div>
   );
+
+  
 }
 
