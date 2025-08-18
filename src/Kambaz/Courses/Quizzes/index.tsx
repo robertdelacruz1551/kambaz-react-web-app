@@ -29,7 +29,15 @@ export default function Quizzes() {
   };
   
   const publishQuiz = async (quizId: any) => {
-    setQuizzes([ ...quizzes.map((quiz) => quiz._id === quizId ? { ...quiz, published: !quiz.published } : { ...quiz })]);
+    const updates = [
+      ...quizzes.map(
+        (quiz) => quiz._id === quizId ? { ...quiz, published: !quiz.published } : { ...quiz }
+      )
+    ];
+    
+    const quiz = updates.find(update => update._id === quizId);
+    await client.updateQuiz(quizId, quiz)
+    setQuizzes([...updates]);
   }
 
   useEffect(() => {
