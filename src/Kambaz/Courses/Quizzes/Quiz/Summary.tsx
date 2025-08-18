@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Button, Col, Modal, Row, Table } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../client";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
@@ -70,8 +70,6 @@ export default function QuizSummary() {
 
     const response = await client.createQuizAttempt(attempt);
     if (response.status === 200) {
-      const { data } = response;
-      console.log(data);
       navigate(`/Kambaz/Courses/${cid}/Quiz/${qid}/attempt/${attemptId}/${faculty ? 'Preview' : 'Attempt'}`)
       setShowPreviewOrTakeModel(true)
     } else {

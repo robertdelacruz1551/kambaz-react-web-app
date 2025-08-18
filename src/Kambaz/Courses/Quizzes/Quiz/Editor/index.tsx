@@ -67,7 +67,6 @@ export default function QuizEditor() {
       }
     }
     
-    console.log(updates);
     await client.createOrUpdate(updates);
     navigate(`/Kambaz/Courses/${cid}/Quizzes`);
   }

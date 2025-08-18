@@ -11,7 +11,6 @@ export default function AttemptsTable(
   { attempts: any[]; }
 ) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  console.log(attempts);
   
   return (
     <div id="wd-people-table">

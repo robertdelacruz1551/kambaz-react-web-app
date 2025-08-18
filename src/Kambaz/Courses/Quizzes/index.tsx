@@ -18,6 +18,8 @@ export default function Quizzes() {
   const faculty: boolean = currentUser && currentUser.role === "FACULTY";
   const [quizzes, setQuizzes] = useState<any[]>([]);
 
+  const date = new Date();
+
   const fetchQuizzes = async () => {
     const quizzes = await client.findQuizzes(cid);
     setQuizzes(quizzes);
@@ -55,22 +57,31 @@ export default function Quizzes() {
             QUIZZES 
           </div>
           <ListGroup className="wd-lessons rounded-0">
-            {quizzes.map((quiz: any) => (
+            {quizzes.filter((quiz: any) => quiz.published || faculty)
+                    .map((quiz: any) => (
               <ListGroup.Item className="wd-quiz-item">
                 <div className="wd-quiz-content">
                   <BsGripVertical className="wd-icon wd-grip-vertical" /> 
-                  {faculty && (
-                    <Link to={`../Quiz/${quiz._id}/View`} id="wd-course-quiz-link"
-                          className="list-group-item text-danger border border-0"> 
-                          <GoRocket className="wd-icon wd-edit" /> 
-                    </Link>)}
+                  <Link to={`../Quiz/${quiz._id}/View`} id="wd-course-quiz-link"
+                    className="list-group-item text-danger border border-0"> 
+                    <GoRocket className="wd-icon wd-edit" /> 
+                  </Link>
                   <div className="wd-quiz-details">
                     <span className="wd-quiz-title"> {quiz.details.title} </span>
                     <div className="wd-quiz-meta">
-                      <span className="wd-module-text"> Multiple Modules </span> | 
-                      <span className="wd-unavailable-text"> Not available until {quiz.details.available?.to?.toString()} </span> | 
-                      <span className="wd-due-text"> Due {quiz.details.due?.toString()} </span> | 
-                      <span className="wd-points-text"> {quiz.details.points} pts </span>
+                      {(new Date(quiz.details.available.from) <= date && date <= new Date(quiz.details.available.to)) && 
+                        <span className="wd-unavailable-text"> <strong> Available unit </strong>{quiz.details.available?.to?.toString()} </span> }
+                      
+                      {(date <= new Date(quiz.details.available.from)) && 
+                        <span className="wd-unavailable-text"> Not available until {quiz.details.available?.from?.toString()} </span>}
+                        
+                      {(new Date(quiz.details.available.to) < date) && 
+                        <span className="wd-unavailable-text"> Closed </span>} |
+                      
+                      <span className="wd-unavailable-text"> <strong>Due</strong> {quiz.details.due?.toString()} </span> | 
+                      <span className="wd-points-text"> {quiz.details.points} pts </span> |
+                      <span className="wd-points-text"> {quiz.questions.length} Questions </span> |
+                      <span className="wd-points-text"> {quiz.score || 0} Score </span>
                     </div>
                   </div>
                 </div>

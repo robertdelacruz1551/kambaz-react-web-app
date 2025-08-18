@@ -25,7 +25,6 @@ export default function Assignments() {
 
   const removeAssignment = async (courseId: any, assignmentId: any) => {
     const assignments = await assignmentClient.deleteAssignment(courseId, assignmentId);
-    console.log(assignments);
     setAssignments(assignments);
   };
 

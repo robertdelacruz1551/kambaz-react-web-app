@@ -92,7 +92,7 @@ export default function Quiz({ preview } : { preview: boolean }) {
         questions: [
         ...quiz.questions.map(
           (question: any) => {
-            const score = question.options.every((option: any) => (option.correct && option.text === option.answer) || (!option.correct && option.text !== option.answer) ) ? question.points : 0
+            const score = question.options.every((option: any) => ((option.correct && option.text === option.answer) || (!option.correct && option.answer === null))) ? question.points : 0
             finalScore += score;
             return {
               ...question,
@@ -103,7 +103,6 @@ export default function Quiz({ preview } : { preview: boolean }) {
       }
     }
     const scored = { ...results, score: finalScore };
-    console.log(scored);
     client.putQuizAttempt(scored);
     setQuiz({...scored});
   };

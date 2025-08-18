@@ -68,8 +68,7 @@ export const deleteUser = async (userId: string) => {
 
 
 export const createUser = async (user: any) => {
-  // TODO: Implement later
-  console.log(user);
+  await axiosWithCredentials.post(`${USERS_API}`, user);
 };
 
 export const findCoursesForUser = async (userId: string) => {
