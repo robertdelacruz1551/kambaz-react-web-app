@@ -16,6 +16,7 @@ export default function Quiz({ preview } : { preview: boolean }) {
     final: false,
     created: Date().toString(),
     updated: Date().toString(),
+    score: 0,
     details: {
       title: "",
       course: "",
@@ -40,7 +41,7 @@ export default function Quiz({ preview } : { preview: boolean }) {
     questions: []
   });
 
-  const handleAnswerReceived = (questionId: any, answer: any) => {
+  const handleAnswerReceived = (questionId: any, option: any) => {
     const update = {
       ...quiz,
       questions: [
@@ -48,14 +49,16 @@ export default function Quiz({ preview } : { preview: boolean }) {
           (question: any) => {
             return question._id !== questionId ? question : {
               ...question,
-              options: question.options.map(
+              options: [
+                ...question.options.map(
                 (original: any) => {
                   if (question.type === 'True-False') {
-                    return original._id !== answer._id ? {...original, answer: null} : answer;
+                    return original._id !== option._id ? {...original, answer: null} : option;
                   } else {
-                    return original._id !== answer._id ? original : answer;
+                    return original._id !== option._id ? original : option;
                   }
                 })
+              ]
             }
           })
       ]
@@ -79,6 +82,7 @@ export default function Quiz({ preview } : { preview: boolean }) {
   }, []);
   
   const handleSubmitQuiz = (final: boolean = false) => {
+    let finalScore = 0;
     const results = {
       ...quiz,
       ...{
@@ -88,16 +92,20 @@ export default function Quiz({ preview } : { preview: boolean }) {
         questions: [
         ...quiz.questions.map(
           (question: any) => {
+            const score = question.options.every((option: any) => (option.correct && option.text === option.answer) || (!option.correct && option.text !== option.answer) ) ? question.points : 0
+            finalScore += score;
             return {
               ...question,
-              score: question.options.every((option: any) => (option.correct && option.text === option.answer) || (!option.correct && option.text !== option.answer) ) ? question.points : 0
+              score: score
             }
           })
         ]
       }
     }
-    client.putQuizAttempt(results);
-    setQuiz({...results});
+    const scored = { ...results, score: finalScore };
+    console.log(scored);
+    client.putQuizAttempt(scored);
+    setQuiz({...scored});
   };
 
   return (

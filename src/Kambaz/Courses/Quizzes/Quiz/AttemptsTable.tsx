@@ -11,13 +11,14 @@ export default function AttemptsTable(
   { attempts: any[]; }
 ) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-
+  console.log(attempts);
+  
   return (
     <div id="wd-people-table">
       <Table striped>
         <thead>
           <tr>
-            <th></th>
+            <th>View</th>
             <th>Title</th>
             <th>Course</th>
             <th>Score</th>

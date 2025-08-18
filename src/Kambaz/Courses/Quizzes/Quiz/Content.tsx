@@ -62,30 +62,29 @@ export default function Content(
         </> :
         <>
           <h2>Quiz Results</h2>
-          <h3 className="text-danger">{quiz.score || 0}% Score</h3>
+          <h3 className="text-success">{(quiz.score / quiz.details.points) * 100.0 || 0}%</h3>
         </>    
       }
       
       <hr></hr>
       <br />   
 
-      { quiz.questions
-            .filter((_: any, index: any) => index === active || quiz.final)
-            .map((question: any) => (
-        <>
+      {quiz.questions.map((question: any, index: number) => (
+        <div>
           <Card>
             <Card.Header>
               <div className="d-grid gap-2 d-md-flex">
+                <div>
+                  <Row>
+                    <Col sm={6}>
+                      <strong className="text-start">Question {index + 1}</strong>
+                    </Col>
+                    <Col sm={6} className="d-grid gap-2 d-md-flex justify-content-md-end">
+                      <strong className="text-end">{question.points} pts</strong>
+                    </Col>
+                  </Row>
+                </div>
               </div>
-
-                <Row>
-                  <Col sm={6}>
-                    <strong className="text-start">Question {active + 1}</strong>
-                  </Col>
-                  <Col sm={6} className="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <strong className="text-end">{question.points} pts</strong>
-                  </Col>
-                </Row>
             </Card.Header>
             <Card.Body>
               <p>{question.text}</p>
@@ -95,19 +94,19 @@ export default function Content(
                 {question.options.map((option: any) => (
                   <ListGroup.Item>
                     {question.type === 'True-False' &&
-                      <Form.Check type="radio" label={option.text} name={question._id} disabled={quiz.final}
-                        defaultChecked={option.answer !== null}
-                        onChange={() => handleAnswerReceived(question._id, {...option, answer: option.text})}
+                      <Form.Check type="radio" label={option.text} name={question._id} id={option._id} disabled={quiz.final}
+                        defaultChecked={option.text === option.answer}
+                        onChange={(e) => handleAnswerReceived(question._id, {...option, answer: option.text})}
                       />}
 
                     {question.type === 'Multiple Choice' &&
-                      <Form.Check type="checkbox" label={option.text} name={question._id} disabled={quiz.final}
+                      <Form.Check type="checkbox" label={option.text} name={question._id} id={option._id} disabled={quiz.final}
                         defaultChecked={option.answer !== null}
                         onChange={(e) => handleAnswerReceived(question._id, {...option, answer: e.target.checked ? option.text : null})}
                       />}
 
                     {question.type === 'Fill In The Blank' && 
-                      <FormControl type="text" value={option.answer} name={question._id} disabled={quiz.final}
+                      <FormControl type="text" value={option.answer} name={question._id} id={option._id} disabled={quiz.final}
                         onChange={(e) => handleAnswerReceived(question._id, {...option, answer: e.target.value})}
                       />}
                       
@@ -122,7 +121,7 @@ export default function Content(
             </Card.Body>
           </Card>
           <br />        
-        </>
+        </div>
       ))}
       <br />
 

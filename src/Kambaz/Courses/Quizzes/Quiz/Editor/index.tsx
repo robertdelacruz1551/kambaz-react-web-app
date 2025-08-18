@@ -39,10 +39,10 @@ export default function QuizEditor() {
         to: Date(),
       }
     },
-    questions: []
+    questions: [{}]
   };
 
-  const [quiz, setQuiz] = useState({...dummy});
+  const [quiz, setQuiz] = useState<any>({...dummy});
 
   const fetchQuiz = async () => {
     const response = await client.findQuiz(qid);
@@ -53,7 +53,22 @@ export default function QuizEditor() {
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    await client.createOrUpdate(quiz);
+
+    let points = 0;
+    quiz.questions.forEach((question: { points: number; }) => {
+      points += question.points;
+    });
+
+    const updates = {
+      ...quiz,
+      details: {
+        ...quiz.details,
+        points: points
+      }
+    }
+    
+    console.log(updates);
+    await client.createOrUpdate(updates);
     navigate(`/Kambaz/Courses/${cid}/Quizzes`);
   }
 
